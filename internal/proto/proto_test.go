@@ -12,7 +12,7 @@ func TestConsoleTitle(t *testing.T) {
 		`管理员: C:\Program Files\WindowsApps\Microsoft.PowerShell_7.6.7.0_x64__8wekyb3d8bbwe\pwsh.exe`: true,
 		`Administrator: C:\Windows\system32\cmd.exe - ping  -n 6 127.0.0.1`:                          true,
 		`C:\Program Files\PowerShell\7\pwsh.exe`:                                                     true,
-		`C:\src\kero`:                                                                                true,
+		`C:\src\tuna`:                                                                                true,
 		`Fix the build`:                                                                              false,
 		`Deploying: C:\deploy.ps1 running`:                                                           false,
 	} {
@@ -41,7 +41,7 @@ func TestWithin(t *testing.T) {
 func TestDirName(t *testing.T) {
 	for dir, want := range map[string]string{
 		`C:\Users\egoist\dev\mygo`: "mygo",
-		`C:\src\kero\`:             "kero",
+		`C:\src\tuna\`:             "tuna",
 		`C:\`:                      `C:\`,
 		"/home/me/src":             "src",
 		"/":                        "/",

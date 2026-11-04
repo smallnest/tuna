@@ -37,7 +37,7 @@ export function pageHead(locale: Locale, path: string, title: string, descriptio
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
     ],
-    links: locales.map((l) => ({ rel: 'alternate', hrefLang: htmlLang[l], href: `https://kero.sh${localize(path, l)}` })),
+    links: locales.map((l) => ({ rel: 'alternate', hrefLang: htmlLang[l], href: `https://tuna.sh${localize(path, l)}` })),
   };
 }
 
@@ -48,8 +48,8 @@ const strings = {
     cli: 'CLI',
     agents: 'Agents',
     download: 'Download',
-    home: 'Kero home',
-    github: 'Kero on GitHub',
+    home: 'tuna home',
+    github: 'tuna on GitHub',
     tagline: 'a terminal for coding agents',
     configuration: 'Configuration',
     shortcuts: 'Shortcuts',
@@ -75,8 +75,8 @@ const strings = {
     cli: 'CLI',
     agents: 'エージェント',
     download: 'ダウンロード',
-    home: 'Kero ホーム',
-    github: 'GitHub の Kero',
+    home: 'tuna ホーム',
+    github: 'GitHub の tuna',
     tagline: 'コーディングエージェントのためのターミナル',
     configuration: '設定',
     shortcuts: 'ショートカット',
@@ -98,7 +98,7 @@ const strings = {
     // docs/sidebar.json's section titles.
     sections: {
       'Getting Started': 'はじめに',
-      'Using kero': 'Kero を使う',
+      'Using tuna': 'tuna を使う',
       Automation: '自動化',
       Reference: 'リファレンス',
     } as Record<string, string>,
@@ -108,8 +108,8 @@ const strings = {
     cli: '命令行',
     agents: '智能体',
     download: '下载',
-    home: 'Kero 首页',
-    github: 'GitHub 上的 Kero',
+    home: 'tuna 首页',
+    github: 'GitHub 上的 tuna',
     tagline: '为编程智能体打造的终端',
     configuration: '配置',
     shortcuts: '快捷键',
@@ -131,7 +131,7 @@ const strings = {
     // docs/sidebar.json's section titles.
     sections: {
       'Getting Started': '入门',
-      'Using kero': '使用 Kero',
+      'Using tuna': '使用 tuna',
       Automation: '自动化',
       Reference: '参考',
     } as Record<string, string>,

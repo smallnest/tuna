@@ -1,5 +1,5 @@
 #!/bin/sh
-# Sync this fork with upstream (egoist/kero): fetch, merge upstream/main
+# Sync this fork with upstream (github.com/egoist/kero): fetch, merge upstream/main
 # into dev, test, and push dev. main takes no part: it is not upstream's,
 # any more than dev is, and dev merges upstream/main itself.
 #
@@ -27,13 +27,13 @@ notify() {
 
 log() { printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
 # A run that stops on purpose says why in Lark, and so in the log.
-die() { log "error: $*"; notify "kero sync failed: $*"; exit 1; }
+die() { log "error: $*"; notify "tuna sync failed: $*"; exit 1; }
 
 # --install writes and loads the launchd job of sync-upstream.plist;
 # --uninstall unloads it. Both use the repository as it is now.
 if [ "${1:-}" = --install ] || [ "${1:-}" = --uninstall ]; then
 	repo=$(pwd -P)
-	label=sh.kero.sync-upstream
+	label=sh.tuna.sync-upstream
 	plist="$HOME/Library/LaunchAgents/$label.plist"
 	[ "$(uname)" = Darwin ] || die "--install needs macOS's launchd"
 	launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
@@ -47,12 +47,12 @@ if [ "${1:-}" = --install ] || [ "${1:-}" = --uninstall ]; then
 	plutil -lint "$plist" >/dev/null || die "$plist is not valid"
 	launchctl bootstrap "gui/$(id -u)" "$plist" || die "launchctl could not load $plist"
 	launchctl enable "gui/$(id -u)/$label"
-	log "installed $label: every 30 minutes, log in /tmp/kero-sync-upstream.log"
+	log "installed $label: every 30 minutes, log in /tmp/tuna-sync-upstream.log"
 	log "run it now with: launchctl kickstart -k gui/$(id -u)/$label"
 	exit 0
 fi
 
-[ -f mygo.json ] && [ -f internal/daemon/daemon.go ] || die "not in the kero repository"
+[ -f mygo.json ] && [ -f internal/daemon/daemon.go ] || die "not in the tuna repository"
 git remote get-url upstream >/dev/null 2>&1 || die "the upstream remote is missing"
 [ -z "$(git status --porcelain)" ] || die "the tree is not clean"
 start=$(git rev-parse --abbrev-ref HEAD)
@@ -77,11 +77,11 @@ git merge-base --is-ancestor upstream/main dev || merge_dev=1
 #
 # CHANGELOG.md always conflicts: this fork writes its own notes in it,
 # under its own title, where upstream writes a new release at the top,
-# and the merge takes "Unreleased (smallnest/kero)" and "2.1.21
-# (smallnest/kero)" to be the same entry. That one conflict is not a
+# and the merge takes "Unreleased (smallnest/tuna)" and "2.1.21
+# (smallnest/tuna)" to be the same entry. That one conflict is not a
 # conflict of the code, so the merge takes this fork's CHANGELOG.md
 # whole, and says so. Any other file that conflicts stops the run.
-merge_try=/tmp/kero-sync-merge.$$
+merge_try=/tmp/tuna-sync-merge.$$
 merge_tree() {
 	if git merge-tree --write-tree dev upstream/main >"$merge_try" 2>&1; then
 		return 0
@@ -138,7 +138,7 @@ fi
 if [ "$merge_dev" = 1 ]; then
 	git push --quiet origin dev || die "pushing dev failed"
 	log "pushed dev"
-	notify "kero sync: dev is up to date with upstream
+	notify "tuna sync: dev is up to date with upstream
 dev: $(git log -1 --oneline dev)"
 fi
 log "done"

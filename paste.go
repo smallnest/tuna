@@ -14,15 +14,15 @@ import (
 
 	"github.com/egoist/mygo/transfer"
 
-	"kero/internal/client"
-	"kero/internal/proto"
-	"kero/internal/shell"
+	"tuna/internal/client"
+	"tuna/internal/proto"
+	"tuna/internal/shell"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
 // maxUpload bounds what a paste into a remote pane uploads, and maxFile
-// each file of it, as kerod takes them (paste.file).
+// each file of it, as tunad takes them (paste.file).
 const (
 	maxUpload = 64 << 20
 	maxFile   = 32 << 20
@@ -155,7 +155,7 @@ func pastedPath(h *host, p string) string {
 
 // pasteDir is where the images pasted into panes are kept, as files a
 // program takes by their paths. A var for tests.
-var pasteDir = func() string { return filepath.Join(os.TempDir(), "kero-paste") }
+var pasteDir = func() string { return filepath.Join(os.TempDir(), "tuna-paste") }
 
 // pasteKeep is how long a pasted image's file stays: an agent may come
 // back to the path long after the paste.
@@ -176,9 +176,9 @@ var pasteImageTypes = map[transfer.Format]string{
 // would: coding agents take the path as an image they attach.
 //
 // The terminal's own paste cannot carry the image to the program. The
-// program runs in kerod's terminal, where a Kitty clipboard protocol paste
-// event (mode 5522) cannot go, since the frames kerod sends do not carry
-// the mode and kerod refuses such reads (ClipboardForward); and a paste of
+// program runs in tunad's terminal, where a Kitty clipboard protocol paste
+// event (mode 5522) cannot go, since the frames tunad sends do not carry
+// the mode and tunad refuses such reads (ClipboardForward); and a paste of
 // an image alone sends nothing, or an empty bracketed paste, which the
 // user sees as a paste that did nothing. So every paste of an image ends
 // in a path or in a toast that says why not.

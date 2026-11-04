@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 )
 
 func testDaemon(t *testing.T) *Daemon {
 	t.Helper()
-	t.Setenv("KERO_CONFIG", filepath.Join(t.TempDir(), "config"))
+	t.Setenv("TUNA_CONFIG", filepath.Join(t.TempDir(), "config"))
 	d := &Daemon{dir: t.TempDir(), log: log.New(io.Discard, "", 0), panes: map[string]*pane{},
 		subs: map[*controlConn]struct{}{}, watchers: map[*controlConn]struct{}{},
 		changeCh: make(chan struct{}, 1), saveCh: make(chan struct{}, 1)}
@@ -79,7 +79,7 @@ func TestBrowserPane(t *testing.T) {
 
 	// A terminal's pane has no page to set.
 	tp := testPane(t)
-	if tp.setPage("https://kero.sh", "") == nil {
+	if tp.setPage("https://tuna.sh", "") == nil {
 		t.Error("set a terminal's page")
 	}
 }
@@ -204,7 +204,7 @@ func TestSelectSendsStateFirst(t *testing.T) {
 	}
 }
 
-// A watcher, as kero events, hears of the state and the notices, in
+// A watcher, as tuna events, hears of the state and the notices, in
 // order, but is no app: it has no page to answer for, nor actions to run.
 func TestWatch(t *testing.T) {
 	d := testDaemon(t)

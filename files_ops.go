@@ -9,9 +9,9 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
 // The Files tab makes files and folders, renames and deletes them, as
@@ -21,7 +21,7 @@ import (
 // it, and Escape leaves; a name with slashes makes the folders in it.
 // Rename puts the field in the entry's place. Delete asks first, and moves
 // a file of this machine to the trash, but deletes a remote host's for
-// good, as kerod has no trash there to move it to.
+// good, as tunad has no trash there to move it to.
 
 const (
 	editNewFile   = "file"

@@ -7,12 +7,12 @@ import (
 	"strings"
 	"testing"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 )
 
 func testHook(t *testing.T, settings string) agentHook {
 	t.Helper()
-	t.Setenv("KERO_HOME", filepath.Join(t.TempDir(), "kero home"))
+	t.Setenv("TUNA_HOME", filepath.Join(t.TempDir(), "tuna home"))
 	h := agentHook{"claude", filepath.Join(t.TempDir(), "settings.json")}
 	if settings != "" {
 		if err := os.WriteFile(h.file, []byte(settings), 0o600); err != nil {
@@ -33,7 +33,7 @@ func read(t *testing.T, path string) string {
 
 // Installing keeps the rest of the settings, in their order, and the
 // other hooks; installing again changes nothing; removing takes only
-// kero's out.
+// tuna's out.
 func TestHookInstallKeepsSettings(t *testing.T) {
 	h := testHook(t, `{
   "model": "opus",
@@ -58,7 +58,7 @@ func TestHookInstallKeepsSettings(t *testing.T) {
 		t.Fatalf("keys out of order:\n%s", got)
 	}
 	for _, want := range []string{`"say done"`, `"echo hi"`, `"matcher": "startup"`, `"timeout": 10`,
-		"kero home/bin/kero' hook claude", "kero home/bin/kero' answer claude"} {
+		"tuna home/bin/tuna' hook claude", "tuna home/bin/tuna' answer claude"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("no %s in:\n%s", want, got)
 		}
@@ -73,7 +73,7 @@ func TestHookInstallKeepsSettings(t *testing.T) {
 		t.Fatal(err)
 	}
 	removed := read(t, h.file)
-	if strings.Contains(removed, "kero") || !strings.Contains(removed, `"echo hi"`) || !strings.Contains(removed, `"say done"`) {
+	if strings.Contains(removed, "tuna") || !strings.Contains(removed, `"echo hi"`) || !strings.Contains(removed, `"say done"`) {
 		t.Fatalf("after remove:\n%s", removed)
 	}
 	if h.state() != "missing" {
@@ -81,10 +81,10 @@ func TestHookInstallKeepsSettings(t *testing.T) {
 	}
 }
 
-// Another kero's hook, as of a moved KERO_HOME, is outdated, and setup
+// Another tuna's hook, as of a moved TUNA_HOME, is outdated, and setup
 // replaces it.
 func TestHookReplacesOutdated(t *testing.T) {
-	h := testHook(t, `{"hooks": {"SessionStart": [{"hooks": [{"type": "command", "command": "'/old/kero/bin/kero' hook claude", "timeout": 10}]}]}}`)
+	h := testHook(t, `{"hooks": {"SessionStart": [{"hooks": [{"type": "command", "command": "'/old/tuna/bin/tuna' hook claude", "timeout": 10}]}]}}`)
 	if st := h.state(); st != "outdated" {
 		t.Fatalf("state %s, want outdated", st)
 	}
@@ -92,7 +92,7 @@ func TestHookReplacesOutdated(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := read(t, h.file)
-	if strings.Contains(got, "/old/kero") || strings.Count(got, "hook claude") != 1 {
+	if strings.Contains(got, "/old/tuna") || strings.Count(got, "hook claude") != 1 {
 		t.Fatalf("after install:\n%s", got)
 	}
 }
@@ -128,11 +128,11 @@ func TestHookRefusesBadSettings(t *testing.T) {
 }
 
 // Pi's and OpenCode's plugins go in when the agent is installed, run
-// Kero's own kero command, and come out whole.
+// tuna's own tuna command, and come out whole.
 func TestAgentPlugins(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
-	t.Setenv("KERO_HOME", filepath.Join(home, "kero"))
+	t.Setenv("TUNA_HOME", filepath.Join(home, "tuna"))
 	for _, env := range []string{"CLAUDE_CONFIG_DIR", "CODEX_HOME", "PI_CODING_AGENT_DIR", "XDG_CONFIG_HOME"} {
 		t.Setenv(env, "")
 	}
@@ -163,8 +163,8 @@ func TestAgentPlugins(t *testing.T) {
 		p := it.(agentPlugin)
 		for name := range p.files {
 			b := read(t, filepath.Join(p.dir, name))
-			if strings.Contains(b, "__KERO__") || name != "package.json" && !strings.Contains(b, filepath.Join(home, "kero", "bin", "kero")) {
-				t.Fatalf("%s/%s runs no kero:\n%s", it.name(), name, b)
+			if strings.Contains(b, "__kero__") || name != "package.json" && !strings.Contains(b, filepath.Join(home, "tuna", "bin", "tuna")) {
+				t.Fatalf("%s/%s runs no tuna:\n%s", it.name(), name, b)
 			}
 		}
 		if err := it.remove(); err != nil {
@@ -174,23 +174,23 @@ func TestAgentPlugins(t *testing.T) {
 			t.Fatalf("%s: %s after remove", it.name(), it.state())
 		}
 	}
-	if _, err := os.Stat(filepath.Join(home, ".config", "opencode", "plugins", "kero")); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(home, ".config", "opencode", "plugins", "tuna")); !os.IsNotExist(err) {
 		t.Fatal("OpenCode's plugin directory stayed")
 	}
 	if _, err := os.Stat(filepath.Join(home, ".pi", "agent", "extensions")); err != nil {
-		t.Fatal("Pi's extensions directory went with Kero's extension")
+		t.Fatal("Pi's extensions directory went with tuna's extension")
 	}
 }
 
 // answerPath takes the file the bot gives a pane, and no other: one of
-// kerod's answer directories, which a command outside the hook may not
+// tunad's answer directories, which a command outside the hook may not
 // write.
 func TestAnswerPath(t *testing.T) {
 	dir := filepath.Join(proto.Dir(), "feishu-answers", "feishu-answers-claude-p1", "turn.json")
 	if got, err := answerPath(dir); err != nil || got != dir {
 		t.Errorf("answerPath(%q) = %q, %v", dir, got, err)
 	}
-	// The answer directories are those of kerod's feishu-answers.
+	// The answer directories are those of tunad's feishu-answers.
 	outside := filepath.Join(t.TempDir(), "feishu-answers-other")
 	defer func(d string) { answers = d }(answers)
 	answers = filepath.Dir(dir)

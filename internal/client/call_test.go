@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 )
 
 // A call that ends in an error still decodes its result, as a wait that

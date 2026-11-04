@@ -5,9 +5,9 @@ import (
 
 	"github.com/egoist/mygo/ui"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
 // gitChip is a pane's branch and its changes since HEAD, after its title:

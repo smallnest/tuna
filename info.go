@@ -10,11 +10,11 @@ import (
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
-	"kero/internal/client"
+	"tuna/internal/client"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
 // The Info view is the side panel's first: where the pane in the session
@@ -46,7 +46,7 @@ type paneInfo struct {
 	listedAt time.Time // when they were
 	ports    int
 	listErr  string // why the processes did not list
-	// feishu is the bot's state, as kerod last told it (infoFeishu).
+	// feishu is the bot's state, as tunad last told it (infoFeishu).
 	feishu    *proto.FeishuState
 	feishuAt  time.Time
 	feishuGot bool // a read of it is under way
@@ -303,8 +303,8 @@ func (a *App) infoAction(c *ui.Context, pal *palette, key, label string, svg *ui
 	}
 }
 
-// splitDir tells a directory's parent and its own name, as /Users/kero
-// and kero; of the root, the whole path is the name.
+// splitDir tells a directory's parent and its own name, as /Users/tuna
+// and tuna; of the root, the whole path is the name.
 func splitDir(dir string) (parent, name string) {
 	dir = strings.TrimSuffix(dir, "/")
 	if i := strings.LastIndexByte(dir, '/'); i > 0 {

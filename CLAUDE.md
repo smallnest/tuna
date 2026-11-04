@@ -1,3 +1,3 @@
-# Kero
+# tuna
 
 - Cutting a release: follow [RELEASING.md](RELEASING.md).

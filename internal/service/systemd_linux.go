@@ -19,21 +19,21 @@ func file() string {
 	return filepath.Join(base, "systemd", "user", Name()+".service")
 }
 
-// unit is the unit that runs exe's kerod. It starts kerod again whenever
+// unit is the unit that runs exe's tunad. It starts tunad again whenever
 // it ends, as after the restart an update asks for (host.restart).
 func unit(exe string) string {
-	return fmt.Sprintf(`# Kero's daemon, which runs the sessions: written by kero daemon install-service.
+	return fmt.Sprintf(`# tuna's daemon, which runs the sessions: written by tuna daemon install-service.
 [Unit]
-Description=Kero sessions (kerod)
-Documentation=https://github.com/egoist/kero/blob/main/docs/remote.md
+Description=tuna sessions (tunad)
+Documentation=https://github.com/smallnest/tuna/blob/main/docs/remote.md
 
 [Service]
 Type=simple
 ExecStart=%s daemon serve
-Environment=KERO_SERVICE=1
+Environment=TUNA_SERVICE=1
 Restart=always
 RestartSec=2
-# kerod saves its sessions as it stops, to start them again
+# tunad saves its sessions as it stops, to start them again
 # (restore-sessions); their programs end with it.
 KillMode=mixed
 TimeoutStopSec=15
@@ -61,7 +61,7 @@ func systemctl(args ...string) (string, error) {
 	return s, err
 }
 
-// Install writes the unit for exe, enables it and starts it. A kerod
+// Install writes the unit for exe, enables it and starts it. A tunad
 // already running, which the app or a bridge started, is stopped first
 // (stop): the service's starts its sessions again.
 func Install(exe string, stop func() error) error {
@@ -69,7 +69,7 @@ func Install(exe string, stop func() error) error {
 		return ErrUnsupported
 	}
 	if _, err := systemctl("show-environment"); err != nil {
-		return fmt.Errorf("no systemd user session to run kerod in: %w", err)
+		return fmt.Errorf("no systemd user session to run tunad in: %w", err)
 	}
 	if err := os.MkdirAll(filepath.Dir(file()), 0o755); err != nil {
 		return err
@@ -141,7 +141,7 @@ func Start() error {
 	return err
 }
 
-// Restart restarts the service: kerod saves its sessions and starts them
+// Restart restarts the service: tunad saves its sessions and starts them
 // again.
 func Restart() error {
 	_, err := systemctl("restart", Name()+".service")

@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"kero/internal/shell"
+	"tuna/internal/shell"
 )
 
 // agentMark starts the line the login shell prints its SSH agent on,

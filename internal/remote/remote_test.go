@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 )
 
 func TestParseAddr(t *testing.T) {
@@ -35,8 +35,8 @@ func TestParseAddr(t *testing.T) {
 		{"wsl://Ubuntu-24.04", "wsl://Ubuntu-24.04", "wsl", "", "Ubuntu-24.04", ""},
 		{"http://build:7373", "http://build:7373", "http", "", "build", "7373"},
 		{"https://build.tail1234.ts.net", "https://build.tail1234.ts.net", "https", "", "build.tail1234.ts.net", ""},
-		{"devbox?kero=/opt/kero/kero", "devbox?kero=%2Fopt%2Fkero%2Fkero", "ssh", "", "devbox", ""},
-		{"devbox?kero=C:/kero/kero.exe", "devbox?kero=C%3A%2Fkero%2Fkero.exe", "ssh", "", "devbox", ""},
+		{"devbox?tuna=/opt/tuna/tuna", "devbox?tuna=%2Fopt%2Ftuna%2Ftuna", "ssh", "", "devbox", ""},
+		{"devbox?tuna=C:/tuna/tuna.exe", "devbox?tuna=C%3A%2Ftuna%2Ftuna.exe", "ssh", "", "devbox", ""},
 	} {
 		a, err := ParseAddr(c.in)
 		if err != nil {
@@ -53,8 +53,8 @@ func TestParseAddr(t *testing.T) {
 			t.Errorf("%q: read back %+v, %v", c.in, b, err)
 		}
 	}
-	for _, bad := range []string{"", "ftp://x", "-oProxyCommand=evil", "ssh://-x", "me:secret@host", "http://", "a b", "devbox/path", "http://x?kero=y", "host:port",
-		"dev$(id)box", "ssh://a;b@host", "x@host's", "host?kero=relative/kero", "host?kero=/opt/it's/kero", "wsl://Ubuntu;rm", "host?kero=C:", "host?kero=C:kero.exe", "host?kero=C:/a b/kero.exe", "host?kero=1:/kero"} {
+	for _, bad := range []string{"", "ftp://x", "-oProxyCommand=evil", "ssh://-x", "me:secret@host", "http://", "a b", "devbox/path", "http://x?tuna=y", "host:port",
+		"dev$(id)box", "ssh://a;b@host", "x@host's", "host?tuna=relative/tuna", "host?tuna=/opt/it's/tuna", "wsl://Ubuntu;rm", "host?tuna=C:", "host?tuna=C:tuna.exe", "host?tuna=C:/a b/tuna.exe", "host?tuna=1:/tuna"} {
 		if a, err := ParseAddr(bad); err == nil {
 			t.Errorf("%q read as %+v", bad, a)
 		}
@@ -62,7 +62,7 @@ func TestParseAddr(t *testing.T) {
 }
 
 func TestBridgeCommandQuotes(t *testing.T) {
-	cmd := bridgeCommand(Addr{Scheme: "ssh", Host: "x", Kero: "/opt/it's/kero"}, "")
+	cmd := bridgeCommand(Addr{Scheme: "ssh", Host: "x", tuna: "/opt/it's/tuna"}, "")
 	if !strings.HasPrefix(cmd, "sh -c '") || !strings.Contains(cmd, `'\''`) {
 		t.Errorf("%s", cmd)
 	}
@@ -76,7 +76,7 @@ func TestBridgeCommandQuotes(t *testing.T) {
 	}
 	// cmd /c takes the quotes off a command that starts with one, and the
 	// SSH server those of one for PowerShell.
-	for _, a := range []Addr{{Scheme: "ssh", Host: "x"}, {Scheme: "ssh", Host: "x", Kero: "C:/kero/kero.exe"}} {
+	for _, a := range []Addr{{Scheme: "ssh", Host: "x"}, {Scheme: "ssh", Host: "x", tuna: "C:/tuna/tuna.exe"}} {
 		if c := bridgeCommand(a, shellCmd); strings.HasPrefix(c, `"`) || !strings.Contains(c, "exit /b 127") {
 			t.Errorf("cmd: %s", c)
 		}
@@ -84,8 +84,8 @@ func TestBridgeCommandQuotes(t *testing.T) {
 			t.Errorf("PowerShell: %s", c)
 		}
 	}
-	if c := bridgeCommand(Addr{Scheme: "ssh", Host: "x", Kero: "C:/kero/kero.exe"}, shellCmd); !strings.HasPrefix(c, `if exist "C:/kero/kero.exe" ("C:/kero/kero.exe" __bridge`) {
-		t.Errorf("cmd, kero=: %s", c)
+	if c := bridgeCommand(Addr{Scheme: "ssh", Host: "x", tuna: "C:/tuna/tuna.exe"}, shellCmd); !strings.HasPrefix(c, `if exist "C:/tuna/tuna.exe" ("C:/tuna/tuna.exe" __bridge`) {
+		t.Errorf("cmd, tuna=: %s", c)
 	}
 }
 
@@ -106,14 +106,14 @@ func TestWindowsShell(t *testing.T) {
 		// The same in the host's code page, GBK, which no pattern of quotes
 		// matches.
 		{1, "sh: \xce\xde\xb7\xa8\xbd\xab\xa1\xb0sh\xa1\xb1\xcf\xee\r\n", shellPowerShell},
-		{127, "sh: 1: exec: /opt/kero: not found", ""},
+		{127, "sh: 1: exec: /opt/Kero: not found", ""},
 		{2, "sh: 1: Syntax error: \"(\" unexpected", ""},
-		{1, "sh: 1: kero: something", ""},
-		{1, "sh: line 1: kero: something", ""},
+		{1, "sh: 1: Kero: something", ""},
+		{1, "sh: line 1: Kero: something", ""},
 		{1, "sh: -c: line 0: syntax error", ""},
 		{2, "'sh' is not recognized as an internal or external command,\r\n", ""},
 		{255, "ssh: connect to host x port 22: Connection refused", ""},
-		{1, "kero: kerod did not start", ""},
+		{1, "Kero: tunad did not start", ""},
 	} {
 		if got := windowsShell(c.code, c.stderr); got != c.want {
 			t.Errorf("%d %q: %q, want %q", c.code, c.stderr, got, c.want)
@@ -121,22 +121,22 @@ func TestWindowsShell(t *testing.T) {
 	}
 }
 
-// fakeSSH is ssh to a host whose shell is $KERO_TEST_SHELL: cmd or
+// fakeSSH is ssh to a host whose shell is $TUNA_TEST_SHELL: cmd or
 // powershell, which run no sh, or sh. It logs the commands it runs, and
-// finds no kero.
+// finds no tuna.
 func fakeSSH() {
 	cmd := os.Args[len(os.Args)-1]
-	if f, err := os.OpenFile(os.Getenv("KERO_TEST_SSH_LOG"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o600); err == nil {
+	if f, err := os.OpenFile(os.Getenv("TUNA_TEST_SSH_LOG"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o600); err == nil {
 		fmt.Fprintf(f, "%q\n", cmd)
 		f.Close()
 	}
-	shell := os.Getenv("KERO_TEST_SHELL")
+	shell := os.Getenv("TUNA_TEST_SHELL")
 	sh := strings.HasPrefix(cmd, "sh -c ")
 	switch {
 	case shell == "sh" && cmd == "sh -c 'exit 0'":
 		os.Exit(0)
 	case shell == "sh" && sh:
-		fmt.Fprintln(os.Stderr, "kero is not installed on devbox")
+		fmt.Fprintln(os.Stderr, "tuna is not installed on devbox")
 		os.Exit(127)
 	case shell == "cmd" && sh:
 		fmt.Fprint(os.Stderr, "'sh' is not recognized as an internal or external command,\r\noperable program or batch file.\r\n")
@@ -145,7 +145,7 @@ func fakeSSH() {
 		fmt.Fprint(os.Stderr, "\x1b[31;1msh: \x1b[31;1mThe term 'sh' is not recognized as a name of a cmdlet.\x1b[0m\r\n")
 		os.Exit(1)
 	case shell == "cmd" && strings.HasPrefix(cmd, "if exist "), shell == "powershell" && strings.HasPrefix(cmd, "$k = @("):
-		fmt.Fprint(os.Stderr, "kero is not installed on DEVBOX\r\n")
+		fmt.Fprint(os.Stderr, "tuna is not installed on DEVBOX\r\n")
 		os.Exit(127)
 	}
 	fmt.Fprintln(os.Stderr, "unexpected command")
@@ -153,25 +153,25 @@ func fakeSSH() {
 }
 
 func TestMain(m *testing.M) {
-	if os.Getenv("KERO_TEST_SHELL") != "" {
+	if os.Getenv("TUNA_TEST_SHELL") != "" {
 		fakeSSH()
 	}
 	os.Exit(m.Run())
 }
 
 // A host of Windows is found as its shell fails to run sh, and reached
-// with a command of that shell from then on; Kero installs there with
+// with a command of that shell from then on; tuna installs there with
 // PowerShell.
 func TestDialWindows(t *testing.T) {
 	exe, err := os.Executable()
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("KERO_SSH", exe)
+	t.Setenv("TUNA_SSH", exe)
 	for i, shell := range []string{"cmd", "powershell", "sh"} {
 		log := filepath.Join(t.TempDir(), "ssh.log")
-		t.Setenv("KERO_TEST_SHELL", shell)
-		t.Setenv("KERO_TEST_SSH_LOG", log)
+		t.Setenv("TUNA_TEST_SHELL", shell)
+		t.Setenv("TUNA_TEST_SSH_LOG", log)
 		a := Addr{Scheme: "ssh", Host: fmt.Sprintf("devbox%d", i)}
 		for range 2 {
 			ctx, cancel := context.WithTimeout(t.Context(), 20*time.Second)
@@ -229,7 +229,7 @@ func TestParseListen(t *testing.T) {
 		"tailnet://":                     {Kind: "tailnet", Port: ListenPort()},
 		"tailnet://:7400":                {Kind: "tailnet", Port: "7400"},
 		"tailnet-serve://":               {Kind: "tailnet-serve"},
-		"tailnet-serve:///run/kero.sock": {Kind: "tailnet-serve", Path: "/run/kero.sock"},
+		"tailnet-serve:///run/tuna.sock": {Kind: "tailnet-serve", Path: "/run/tuna.sock"},
 		"tailcat://":                     {Kind: "tailcat", Port: ListenPort()},
 		"tailcat://:7400":                {Kind: "tailcat", Port: "7400"},
 	} {
@@ -238,10 +238,10 @@ func TestParseListen(t *testing.T) {
 			t.Errorf("%q: %+v, %v", in, got, err)
 		}
 	}
-	// A test is a development build, whose kerod listens beside the
-	// installed Kero's.
+	// A test is a development build, whose tunad listens beside the
+	// installed tuna's.
 	if ListenPort() == DefaultPort {
-		t.Errorf("a development build listens on %s, as the installed Kero", DefaultPort)
+		t.Errorf("a development build listens on %s, as the installed tuna", DefaultPort)
 	}
 	for _, bad := range []string{"tcp://:80", "tailnet://0.0.0.0:7373", "tailnet-serve://host/x", ":7373", "tailnet://:0", "tailnet://:99999", "tailcat://host:7373", "tailcat://:0"} {
 		if l, err := ParseListen(bad); err == nil {
@@ -407,16 +407,16 @@ func TestMuxOtherVersion(t *testing.T) {
 		sv.Write(append(b, '\n'))
 	}()
 	_, err := handshake(context.Background(), cl, Addr{Scheme: "ssh", Host: "x"}, Options{})
-	if err == nil || !strings.Contains(err.Error(), "Kero 9.0") {
+	if err == nil || !strings.Contains(err.Error(), "tuna 9.0") {
 		t.Errorf("a host of another mux version: %v", err)
 	}
 	cl, sv = pipes()
 	go func() {
-		// Not Kero at all: a shell that says nothing of it.
+		// Not tuna at all: a shell that says nothing of it.
 		bufio.NewReader(sv).ReadBytes('\n')
 		io.WriteString(sv, strings.Repeat("hello\n", 200))
 	}()
-	if _, err := handshake(context.Background(), cl, Addr{Scheme: "ssh", Host: "x"}, Options{}); err == nil || !strings.Contains(err.Error(), "not Kero") {
+	if _, err := handshake(context.Background(), cl, Addr{Scheme: "ssh", Host: "x"}, Options{}); err == nil || !strings.Contains(err.Error(), "not tuna") {
 		t.Errorf("not Kero: %v", err)
 	}
 }
@@ -449,7 +449,7 @@ func TestFlateConn(t *testing.T) {
 	}
 }
 
-// Plain http:// carries Kero only to a tailnet peer, or through a tunnel
+// Plain http:// carries tuna only to a tailnet peer, or through a tunnel
 // of this machine's.
 func TestTailnetAddr(t *testing.T) {
 	for ip, ok := range map[string]bool{"100.64.0.1": true, "100.127.255.254": true, "fd7a:115c:a1e0::1": true, "127.0.0.1": true, "::1": true,
@@ -460,7 +460,7 @@ func TestTailnetAddr(t *testing.T) {
 	}
 }
 
-// The bridge's sh finds kero where it looks, a path with a space too, and
+// The bridge's sh finds tuna where it looks, a path with a space too, and
 // says when there is none.
 func TestBridgeScript(t *testing.T) {
 	if runtime.GOOS == "windows" {
@@ -471,13 +471,13 @@ func TestBridgeScript(t *testing.T) {
 		t.Skip(err)
 	}
 	// The apps' paths, which are no words of HOME, are not of this test:
-	// the bridge finds Kero there with no HOME to make first.
+	// the bridge finds tuna there with no HOME to make first.
 	saved := BridgeLocations
 	t.Cleanup(func() { BridgeLocations = saved })
 	BridgeLocations = slices.DeleteFunc(slices.Clone(saved), func(l string) bool {
 		return !strings.HasPrefix(l, "$HOME")
 	})
-	for _, loc := range []string{"", ".local/bin/kero", "Library/Application Support/kero/bin/kero"} {
+	for _, loc := range []string{"", ".local/bin/tuna", "Library/Application Support/tuna/bin/tuna"} {
 		home := t.TempDir()
 		if loc != "" {
 			os.MkdirAll(filepath.Dir(filepath.Join(home, loc)), 0o755)
@@ -489,7 +489,7 @@ func TestBridgeScript(t *testing.T) {
 		if loc == "" {
 			var ee *exec.ExitError
 			if !errors.As(err, &ee) || ee.ExitCode() != bridgeNotFound {
-				t.Errorf("no kero: %q, %v", out, err)
+				t.Errorf("no Kero: %q, %v", out, err)
 			}
 			continue
 		}
@@ -506,10 +506,10 @@ func TestFindShell(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("KERO_SSH", exe)
-	t.Setenv("KERO_TEST_SSH_LOG", filepath.Join(t.TempDir(), "ssh.log"))
+	t.Setenv("TUNA_SSH", exe)
+	t.Setenv("TUNA_TEST_SSH_LOG", filepath.Join(t.TempDir(), "ssh.log"))
 	for i, shell := range []string{"cmd", "powershell", "sh"} {
-		t.Setenv("KERO_TEST_SHELL", shell)
+		t.Setenv("TUNA_TEST_SHELL", shell)
 		a := Addr{Scheme: "ssh", Host: fmt.Sprintf("probe%d", i)}
 		if err := FindShell(a, true); err != nil {
 			t.Errorf("%s: %v", shell, err)

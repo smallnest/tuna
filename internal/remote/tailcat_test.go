@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 )
 
 // A pair code is the address of a tailcat host, as its String writes it,

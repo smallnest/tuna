@@ -5,9 +5,9 @@ import (
 	"os/user"
 	"runtime"
 
-	"kero/internal/build"
-	"kero/internal/proto"
-	"kero/internal/update"
+	"tuna/internal/build"
+	"tuna/internal/proto"
+	"tuna/internal/update"
 )
 
 // LocalInfo describes this machine to a remote client, which peer names.

@@ -1,4 +1,4 @@
-module kero
+module tuna
 
 go 1.27.3
 

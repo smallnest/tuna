@@ -1,11 +1,11 @@
 #!/bin/sh
 # Tell the user in Lark/Feishu of the PRs opened on upstream
-# (egoist/kero) since the last run, in one table: each one's number and
+# (github.com/egoist/kero) since the last run, in one table: each one's number and
 # title, linked, to decide whether to cherry-pick it into dev. It says
 # nothing when there are none.
 #
-# Which PRs were told is kept in ~/.local/state/kero/upstream-prs (override
-# with KERO_PR_STATE). The first run of a new store tells only of PRs
+# Which PRs were told is kept in ~/.local/state/tuna/upstream-prs (override
+# with TUNA_PR_STATE). The first run of a new store tells only of PRs
 # opened in the last day, rather than of every open PR.
 #
 # Needs gh (logged in) and lark-cli (bot). Every 4 hours, install it as a
@@ -13,8 +13,8 @@
 # it; see scripts/notify-upstream-prs.plist).
 set -eu
 
-REPO=egoist/kero
-label=sh.kero.notify-upstream-prs
+REPO=github.com/egoist/kero
+label=sh.tuna.notify-upstream-prs
 
 # --install writes and loads the launchd job of notify-upstream-prs.plist;
 # --uninstall unloads it. Both use the repository as it is now, and
@@ -43,14 +43,14 @@ if [ "${1:-}" = --install ] || [ "${1:-}" = --uninstall ]; then
 	plutil -lint "$plist" >/dev/null || { echo "$0: $plist is not valid" >&2; exit 1; }
 	launchctl bootstrap "gui/$(id -u)" "$plist" || { echo "$0: launchctl could not load $plist" >&2; exit 1; }
 	launchctl enable "gui/$(id -u)/$label"
-	echo "installed $label: every 4 hours, log in /tmp/kero-upstream-prs.log"
+	echo "installed $label: every 4 hours, log in /tmp/tuna-upstream-prs.log"
 	echo "run it now with: launchctl kickstart -k gui/$(id -u)/$label"
 	exit 0
 fi
 
 log() { printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
 
-state=${KERO_PR_STATE:-$HOME/.local/state/kero/upstream-prs}
+state=${TUNA_PR_STATE:-$HOME/.local/state/tuna/upstream-prs}
 now=$(date +%s)
 mkdir -p "$(dirname "$state")"
 touch "$state"
@@ -85,14 +85,14 @@ table=$(printf '%s' "$prs" | jq -r '
 	| .[0:101] | join("\n")')
 count=$(printf '%s' "$prs" | jq 'length')
 
-text="kero upstream: $count new PR(s)
+text="tuna upstream: $count new PR(s)
 $table
 https://github.com/$REPO/pulls"
 numbers=$(printf '%s' "$prs" | jq -r '.[] | .number')
 
 # One message, told at once as a whole: the idempotency key is of the
 # numbers told, so a run that told them again sends no second message.
-key="kero-prs-$(printf '%s' "$numbers" | tr '\n' '-')"
+key="tuna-prs-$(printf '%s' "$numbers" | tr '\n' '-')"
 if command -v lark-cli >/dev/null 2>&1 &&
 	lark-cli im +messages-send --as bot --user-id "${larkUser:-}" --markdown "$text" \
 		--idempotency-key "$key" >/dev/null 2>&1; then

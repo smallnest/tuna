@@ -1,11 +1,11 @@
 ---
 title: Sessions & Projects
-description: How Kero groups terminal sessions by project and keeps them running in kerod.
+description: How tuna groups terminal sessions by project and keeps them running in tunad.
 ---
 
 # Sessions & Projects
 
-Kero organizes your work in two levels: projects (folders) hold sessions (tasks), and every session keeps running in kerod until you close it.
+tuna organizes your work in two levels: projects (folders) hold sessions (tasks), and every session keeps running in tunad until you close it.
 
 ## Sessions
 
@@ -42,31 +42,31 @@ Until you or an agent name a session, the `session-name` setting (**Name session
 
 ## Projects
 
-A **project** is a folder. Kero groups sessions under their project in the sidebar. Open one with <kbd>⌘</kbd> <kbd>O</kbd>, drag folders from your file manager into the sidebar, or let `kero new` pick it by the directory a session starts in. Dropping folders opens one session per unique project; folders already registered reuse their project. Native folder drops always open on This Computer, even when a remote session is selected. Files and inaccessible folders are rejected. On macOS, file packages such as `.app` bundles are rejected too, matching the Open Project folder picker.
+A **project** is a folder. tuna groups sessions under their project in the sidebar. Open one with <kbd>⌘</kbd> <kbd>O</kbd>, drag folders from your file manager into the sidebar, or let `tuna new` pick it by the directory a session starts in. Dropping folders opens one session per unique project; folders already registered reuse their project. Native folder drops always open on This Computer, even when a remote session is selected. Files and inaccessible folders are rejected. On macOS, file packages such as `.app` bundles are rejected too, matching the Open Project folder picker.
 
 ```sh
-kero projects            # list projects
-kero new -p my-app       # start a session in a project by name
+tuna projects            # list projects
+tuna new -p my-app       # start a session in a project by name
 ```
 
-## kerod
+## tunad
 
-Sessions run in **kerod**, a daemon that the app starts on demand. Kero is a window onto kerod:
+Sessions run in **tunad**, a daemon that the app starts on demand. tuna is a window onto tunad:
 
-- Quitting Kero leaves every session running.
-- Opening Kero again shows every session as it was, scrollback included.
-- After kerod itself restarts, such as after a reboot, Kero starts your sessions again in their directories. Turn this off with `restore-sessions = false`.
-- A pane that was running Claude Code, Codex, Pi or OpenCode resumes its conversation, as the agent's own resume option would, once [Kero's skill](./agents.md#install-the-skill) is set up for that agent. Other programs don't start again unasked: their pane comes back at a shell. Turn this off with `resume-agents = false`.
+- Quitting tuna leaves every session running.
+- Opening tuna again shows every session as it was, scrollback included.
+- After tunad itself restarts, such as after a reboot, tuna starts your sessions again in their directories. Turn this off with `restore-sessions = false`.
+- A pane that was running Claude Code, Codex, Pi or OpenCode resumes its conversation, as the agent's own resume option would, once [tuna's skill](./agents.md#install-the-skill) is set up for that agent. Other programs don't start again unasked: their pane comes back at a shell. Turn this off with `resume-agents = false`.
 
 ```sh
-kero daemon status       # is kerod running?
-kero daemon restart      # restart it (sessions start again)
-kero daemon stop         # stop it and end every session
+tuna daemon status       # is tunad running?
+tuna daemon restart      # restart it (sessions start again)
+tuna daemon stop         # stop it and end every session
 ```
 
 ### Quitting
 
-Quitting Kero keeps the sessions running, so that opening it again shows them, as they were. To have quitting end them, as **Quit and End All Sessions** does, set `quit-ends-sessions = true`. Then every quit ends this machine's sessions and their programs, and stops kerod. This applies to the close button, ⌘Q and the menu. Kero asks first while a program runs, as `confirm-close` says. Sessions on other machines keep running.
+Quitting tuna keeps the sessions running, so that opening it again shows them, as they were. To have quitting end them, as **Quit and End All Sessions** does, set `quit-ends-sessions = true`. Then every quit ends this machine's sessions and their programs, and stops tunad. This applies to the close button, ⌘Q and the menu. tuna asks first while a program runs, as `confirm-close` says. Sessions on other machines keep running.
 
 ```ini
 quit-ends-sessions = true

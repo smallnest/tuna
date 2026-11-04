@@ -8,18 +8,18 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
-// cliLinks are where installCLI puts the kero command, and where Settings
+// cliLinks are where installCLI puts the tuna command, and where Settings
 // looks for it.
 func cliLinks() []string {
-	return []string{"/usr/local/bin/kero", "/opt/homebrew/bin/kero", filepath.Join(proto.Home(), ".local/bin/kero")}
+	return []string{"/usr/local/bin/tuna", "/opt/homebrew/bin/tuna", filepath.Join(proto.Home(), ".local/bin/tuna")}
 }
 
-// installCLI links the kero command to this executable: /usr/local/bin's
+// installCLI links the tuna command to this executable: /usr/local/bin's
 // on macOS, asking for an administrator's password when the directory
 // needs it; ~/.local/bin's on Linux, which needs none.
 func (a *App) installCLI() {
@@ -29,9 +29,9 @@ func (a *App) installCLI() {
 		return
 	}
 	go func() {
-		link := "/usr/local/bin/kero"
+		link := "/usr/local/bin/tuna"
 		if runtime.GOOS != "darwin" {
-			link = filepath.Join(proto.Home(), ".local/bin/kero")
+			link = filepath.Join(proto.Home(), ".local/bin/tuna")
 			os.MkdirAll(filepath.Dir(link), 0o755)
 		}
 		os.Remove(link)
@@ -55,7 +55,7 @@ func (a *App) installCLI() {
 	}()
 }
 
-// cliInstalled returns where the kero command is installed, and what it
+// cliInstalled returns where the tuna command is installed, and what it
 // runs, "" when it is nowhere.
 func cliInstalled() string {
 	for _, p := range cliLinks() {

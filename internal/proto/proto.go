@@ -1,5 +1,5 @@
-// Package proto is the wire protocol between kerod, the daemon that owns
-// every session's pseudo-terminal, and its clients: the app and the kero
+// Package proto is the wire protocol between tunad, the daemon that owns
+// every session's pseudo-terminal, and its clients: the app and the tuna
 // CLI.
 //
 // A client connects to the daemon's Unix socket and sends one JSON line,
@@ -32,7 +32,7 @@ const Version = 3
 type Hello struct {
 	Kind    string `json:"kind"` // "control" or "attach"
 	Version int    `json:"version"`
-	// Env is the environment of the app that connects, which its kerod
+	// Env is the environment of the app that connects, which its tunad
 	// runs the agents it starts without a terminal in: the app starts
 	// from launchd, as on macOS, with the system's PATH and none of the
 	// account's variables, as its login shell's profile sets them.
@@ -41,8 +41,8 @@ type Hello struct {
 	Session string `json:"session,omitempty"`
 	Cols    int    `json:"cols,omitempty"`
 	Rows    int    `json:"rows,omitempty"`
-	// Who connects, which `kero __bridge` adds to the Hello of a remote
-	// client's stream, for `kero clients`: the SSH client's address, how it
+	// Who connects, which `tuna __bridge` adds to the Hello of a remote
+	// client's stream, for `tuna clients`: the SSH client's address, how it
 	// came (ssh, wsl), and what the client said it is (MuxHello.Client).
 	Peer   string `json:"peer,omitempty"`
 	Via    string `json:"via,omitempty"`
@@ -54,11 +54,11 @@ type Welcome struct {
 	Version int   `json:"version"`
 	PID     int   `json:"pid"`
 	Started int64 `json:"started"` // unix ms
-	// App is the version of Kero that kerod runs (App.Version): after an
-	// update it is the version before, until kerod restarts.
+	// App is the version of tuna that tunad runs (App.Version): after an
+	// update it is the version before, until tunad restarts.
 	App string `json:"app,omitempty"`
-	// Build fingerprints the code kerod runs (build.Daemon): an update
-	// that leaves it as it was needs no restart. An earlier kerod, or the
+	// Build fingerprints the code tunad runs (build.Daemon): an update
+	// that leaves it as it was needs no restart. An earlier tunad, or the
 	// server build's, tells none.
 	Build string `json:"build,omitempty"`
 	Error string `json:"error,omitempty"`
@@ -83,16 +83,16 @@ type Message struct {
 
 	Event string `json:"event,omitempty"` // "state", "select", "action", "notice", "browser"
 	State *State `json:"state,omitempty"`
-	// Select asks the app to show a session ("kero focus").
+	// Select asks the app to show a session ("tuna focus").
 	Select string `json:"select,omitempty"`
-	// Action asks the app to run one of its actions ("kero do"), with
+	// Action asks the app to run one of its actions ("tuna do"), with
 	// Args, when the user allows Remote Control.
 	Action string            `json:"action,omitempty"`
 	Args   map[string]string `json:"args,omitempty"`
 	// Notice is a program's desktop notification, to show as it is.
 	Notice *Notice `json:"notice,omitempty"`
 	// Browser asks the app to do something on a browser pane's page
-	// ("kero browser"), which it answers with browser.answer.
+	// ("tuna browser"), which it answers with browser.answer.
 	Browser *BrowserRequest `json:"browser,omitempty"`
 }
 
@@ -145,13 +145,13 @@ type State struct {
 	// Viewed is the session a client shows in a focused window.
 	Viewed  string `json:"viewed,omitempty"`
 	Started int64  `json:"started"` // unix ms, the daemon's start
-	// Conversations counts the changes to the conversations kerod
+	// Conversations counts the changes to the conversations tunad
 	// remembers that show in the sidebar, for the app to ask for them
 	// anew (the conversations method) rather than have them in every
 	// state.
 	Conversations uint64 `json:"conversations,omitempty"`
 	// Ended are the agent sessions that ended, for the sidebar to offer
-	// to resume (kero fork).
+	// to resume (tuna fork).
 	Ended []EndedSession `json:"ended,omitempty"`
 }
 
@@ -185,7 +185,7 @@ type Pane struct {
 	// Agent names the coding agent running in the foreground, when known.
 	Agent string `json:"agent,omitempty"`
 	// AgentSessionID is the conversation that the agent runs in the pane,
-	// as its hook told kerod: "" when it has none.
+	// as its hook told tunad: "" when it has none.
 	AgentSessionID string `json:"agentSessionId,omitempty"`
 	// Runtime names the interpreter of a foreground script, as "node",
 	// when Process is the script's name.
@@ -218,7 +218,7 @@ type Pane struct {
 	// with, once it ended and the pane went on with its shell.
 	CommandExit *int `json:"commandExit,omitempty"`
 	// AgentSession is the coding agent's own session, as its hook told
-	// (kero hook), while the agent runs: what a restore resumes.
+	// (tuna hook), while the agent runs: what a restore resumes.
 	AgentSession *AgentSession `json:"agentSession,omitempty"`
 	// FeishuAnswer is the file the agent's Stop hook writes each turn's
 	// answer to, while a Feishu chat drives the agent.
@@ -237,8 +237,8 @@ type Pane struct {
 	Turn *Turn `json:"turn,omitempty"`
 }
 
-// GitInfo is a git worktree's branch and changes, as kerod last found
-// them. kerod replaces it whole, never changing one it sent.
+// GitInfo is a git worktree's branch and changes, as tunad last found
+// them. tunad replaces it whole, never changing one it sent.
 type GitInfo struct {
 	Root     string `json:"root"`             // the worktree's top level
 	Branch   string `json:"branch,omitempty"` // "" when detached
@@ -274,8 +274,8 @@ type AgentSession struct {
 }
 
 // Conversation is a coding agent's conversation that ran in one of
-// kerod's panes, as kerod remembers it after the pane is gone, to resume
-// (kero history, kero resume).
+// tunad's panes, as tunad remembers it after the pane is gone, to resume
+// (tuna history, tuna resume).
 type Conversation struct {
 	Agent string `json:"agent"` // as AgentSession's
 	ID    string `json:"id"`
@@ -310,8 +310,8 @@ func (c *Conversation) Label() string {
 	return c.Agent
 }
 
-// EndedSession is a coding agent's session that ran in one of kerod's
-// panes, as kerod remembers it after the pane is gone.
+// EndedSession is a coding agent's session that ran in one of tunad's
+// panes, as tunad remembers it after the pane is gone.
 type EndedSession struct {
 	AgentSession
 	Dir      string `json:"dir"`
@@ -344,7 +344,7 @@ type Session struct {
 	Lead   string `json:"lead,omitempty"`
 	Focus  string `json:"focus,omitempty"`
 	Zoomed string `json:"zoomed,omitempty"`
-	// Worktree is the linked git worktree kero made for the session to
+	// Worktree is the linked git worktree tuna made for the session to
 	// work in, nil for none.
 	Worktree *Worktree `json:"worktree,omitempty"`
 }
@@ -362,7 +362,7 @@ type FeishuKeep struct {
 	Text  string `json:"text"`
 }
 
-// FeishuKept is what a chat's host asked kerod to keep (feishu.kept).
+// FeishuKept is what a chat's host asked tunad to keep (feishu.kept).
 type FeishuKept struct {
 	Turns []FeishuTurn `json:"turns"`
 }
@@ -406,7 +406,7 @@ type FeishuFeed struct {
 	Evidence string `json:"evidence,omitempty"`
 }
 
-// FeishuEnv is a host's environment, which the app sends its kerod as
+// FeishuEnv is a host's environment, which the app sends its tunad as
 // the bot connects: the agents the bot runs without a terminal need the
 // app's variables, as a launchd job starts it without the account's.
 type FeishuEnv struct {
@@ -463,7 +463,7 @@ type FeishuSent struct {
 	Message string `json:"message"`
 }
 
-// FeishuState is kerod's connection to its Feishu app (feishu.status).
+// FeishuState is tunad's connection to its Feishu app (feishu.status).
 type FeishuState struct {
 	Configured bool   `json:"configured"` // feishu-app names an app
 	Secret     bool   `json:"secret"`     // the App Secret is kept
@@ -472,7 +472,7 @@ type FeishuState struct {
 	Error      string `json:"error,omitempty"`
 }
 
-// Worktree is a linked git worktree kero made for a session: Path checks
+// Worktree is a linked git worktree tuna made for a session: Path checks
 // out Branch, which started from Base, in the repository whose main
 // checkout is Main.
 type Worktree struct {
@@ -705,7 +705,7 @@ func isTitleGlyph(r rune) bool {
 }
 
 // DirName is a directory's last element, whichever system's it is: the
-// app shows a Windows host's C:\src\kero as kero on a Mac, where
+// app shows a Windows host's C:\src\tuna as tuna on a Mac, where
 // filepath.Base doesn't split at a backslash.
 func DirName(dir string) string {
 	t := strings.TrimRight(dir, `/\`)
@@ -786,22 +786,22 @@ func Home() string {
 	return h
 }
 
-// Name names kero's directories: "kero", or "kero-dev" for a development
+// Name names tuna's directories: "tuna", or "tuna-dev" for a development
 // build, so that it runs a daemon, sessions and settings of its own beside
-// the installed Kero.
+// the installed tuna.
 func Name() string {
 	if mygo.IsDev() {
-		return "kero-dev"
+		return "tuna-dev"
 	}
-	return "kero"
+	return "tuna"
 }
 
-// Dir returns kero's directory: $KERO_HOME, else
-// ~/Library/Application Support/kero (~/.config/kero on Linux,
-// %AppData%\kero on Windows), of Name. The app, the daemon and the CLI of
+// Dir returns tuna's directory: $TUNA_HOME, else
+// ~/Library/Application Support/tuna (~/.config/tuna on Linux,
+// %AppData%\tuna on Windows), of Name. The app, the daemon and the CLI of
 // a build share it.
 func Dir() string {
-	if d := os.Getenv("KERO_HOME"); d != "" {
+	if d := os.Getenv("TUNA_HOME"); d != "" {
 		return d
 	}
 	base, err := os.UserConfigDir()
@@ -811,13 +811,13 @@ func Dir() string {
 	return filepath.Join(base, Name())
 }
 
-// SocketPath returns the daemon's socket: $KERO_SOCKET, else kerod.sock in
+// SocketPath returns the daemon's socket: $TUNA_SOCKET, else tunad.sock in
 // Dir.
 func SocketPath() string {
-	if s := os.Getenv("KERO_SOCKET"); s != "" {
+	if s := os.Getenv("TUNA_SOCKET"); s != "" {
 		return s
 	}
-	p := filepath.Join(Dir(), "kerod.sock")
+	p := filepath.Join(Dir(), "tunad.sock")
 	if len(p) > 100 {
 		// Past what a Unix socket's address holds (104 bytes on macOS):
 		// a short path of the user's, named after the directory.
@@ -825,16 +825,16 @@ func SocketPath() string {
 		h.Write([]byte(Dir()))
 		if runtime.GOOS == "windows" {
 			// Its temporary directory is the user's.
-			return filepath.Join(os.TempDir(), fmt.Sprintf("kero-%08x.sock", h.Sum32()))
+			return filepath.Join(os.TempDir(), fmt.Sprintf("tuna-%08x.sock", h.Sum32()))
 		}
-		p = fmt.Sprintf("/tmp/kero-%d-%08x.sock", os.Getuid(), h.Sum32())
+		p = fmt.Sprintf("/tmp/tuna-%d-%08x.sock", os.Getuid(), h.Sum32())
 	}
 	return p
 }
 
 // StopEvent names the event that asks the daemon of a pid to stop on
 // Windows, where it has no signals.
-func StopEvent(pid int) string { return fmt.Sprintf(`Local\kerod-stop-%d`, pid) }
+func StopEvent(pid int) string { return fmt.Sprintf(`Local\tunad-stop-%d`, pid) }
 
 // Ago writes how long ago a time was, as the sidebar shows it: "now",
 // "4m", "2h", "3d".
@@ -940,7 +940,7 @@ type (
 		ID string `json:"id"`
 	}
 	// CloseParams closes a session; RemoveWorktree removes the worktree
-	// kero made for it too, unless another session works in it, and
+	// tuna made for it too, unless another session works in it, and
 	// unless changes it would lose (WorktreeCheck.Files) need Force.
 	CloseParams struct {
 		ID             string `json:"id"`
@@ -1025,7 +1025,7 @@ type (
 		// load, in ms: 0 for the app's default.
 		Timeout int64 `json:"timeout,omitempty"`
 	}
-	// BrowserRequest is a browser call as kerod hands it to the app: Req
+	// BrowserRequest is a browser call as tunad hands it to the app: Req
 	// is what the app answers it by, and Pane the browser pane's id.
 	BrowserRequest struct {
 		Req  int64  `json:"req"`
@@ -1078,13 +1078,13 @@ type (
 		Timeout int64 `json:"timeout,omitempty"` // ms; 0 waits as long as it takes
 	}
 	// ReportParams carry a program's status report to pane ID, as the
-	// body of an OSC 7501 after "7501;": kero report sends it so when it
+	// body of an OSC 7501 after "7501;": tuna report sends it so when it
 	// has no terminal to write it to, as under an agent's shell tool.
 	ReportParams struct {
 		ID     string `json:"id"`
 		Report string `json:"report"`
 	}
-	// AgentSessionParams tell a pane's agent's session (kero hook).
+	// AgentSessionParams tell a pane's agent's session (tuna hook).
 	// The pane is the one whose shell runs PID, the hook's process, else
 	// the one that can only be the agent's: an agent's service that panes
 	// share, as Codex's app server, runs hooks under none. An empty
@@ -1116,7 +1116,7 @@ type (
 		PID int `json:"pid"`
 	}
 	// AgentSessionResult is the pane told of, and its session; Away: the
-	// agent runs under none of kero's shells, and so do its commands.
+	// agent runs under none of tuna's shells, and so do its commands.
 	AgentSessionResult struct {
 		Pane    string `json:"pane"`
 		Session string `json:"session"`
@@ -1188,7 +1188,7 @@ type (
 	}
 )
 
-// Process is a program in a pane's terminal, as kerod lists it.
+// Process is a program in a pane's terminal, as tunad lists it.
 type Process struct {
 	PID  int `json:"pid"`
 	PPID int `json:"ppid,omitempty"`

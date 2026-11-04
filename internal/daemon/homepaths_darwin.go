@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"kero/internal/settings"
+	"tuna/internal/settings"
 )
 
 // homePaths are the account's places for programs, which a launchd job's

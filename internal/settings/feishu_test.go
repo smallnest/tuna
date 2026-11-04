@@ -76,12 +76,12 @@ func TestFeishuKeysRejectBadValues(t *testing.T) {
 	}
 }
 
-// The App Secret goes in kero's directory, readable by this account only,
+// The App Secret goes in tuna's directory, readable by this account only,
 // and the configuration never holds it.
 func TestFeishuSecret(t *testing.T) {
 	dir := t.TempDir()
-	t.Setenv("KERO_HOME", dir)
-	t.Setenv("KERO_CONFIG", filepath.Join(dir, "config"))
+	t.Setenv("TUNA_HOME", dir)
+	t.Setenv("TUNA_CONFIG", filepath.Join(dir, "config"))
 	if _, err := LoadFeishuSecret(); err != ErrFeishuNotConfigured {
 		t.Fatalf("no secret reads %v", err)
 	}

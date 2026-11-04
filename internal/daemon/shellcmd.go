@@ -130,7 +130,7 @@ func shellQuote(shell, s string) string {
 	return "'" + strings.ReplaceAll(s, "'", `'\''`) + "'"
 }
 
-// oneLine tells a command given as one line, as `kero new -- "npm run
+// oneLine tells a command given as one line, as `tuna new -- "npm run
 // dev"` gives it, which the shell runs as it is.
 func oneLine(args []string) bool {
 	return len(args) == 1 && strings.ContainsAny(args[0], " ;|&")

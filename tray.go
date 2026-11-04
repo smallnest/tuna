@@ -8,14 +8,14 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/plugins/updater"
 
-	"kero/internal/settings"
+	"tuna/internal/settings"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
-// Kero's icon in the menu bar on macOS, as Settings › General chooses
+// tuna's icon in the menu bar on macOS, as Settings › General chooses
 // (settings.AppIcons), and always in the notification area on Windows and
-// Linux. While it shows, closing the window leaves Kero running there,
+// Linux. While it shows, closing the window leaves tuna running there,
 // until the user quits; the icon opens the window again.
 
 // trayTemplate is the frog of the app's icon, black on transparent for
@@ -67,9 +67,9 @@ func (a *App) applyTray() {
 		if runtime.GOOS == "darwin" {
 			icon, template = trayTemplate, true
 		}
-		t, err := mygo.NewTray(mygo.TrayOptions{ID: "kero", Icon: icon, IconIsTemplate: template, ToolTip: mygo.App.Name(), Menu: a.trayMenu()})
+		t, err := mygo.NewTray(mygo.TrayOptions{ID: "tuna", Icon: icon, IconIsTemplate: template, ToolTip: mygo.App.Name(), Menu: a.trayMenu()})
 		if err != nil {
-			log.Println("kero: tray:", err)
+			log.Println("tuna: tray:", err)
 			return
 		}
 		// Windows' left click, where the right one opens the menu.

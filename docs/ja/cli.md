@@ -1,11 +1,11 @@
 ---
 title: コマンドライン
-description: kero CLI で、シェルやスクリプトから Kero のセッションとペインを操作します。
+description: tuna CLI で、シェルやスクリプトから tuna のセッションとペインを操作します。
 ---
 
 # コマンドライン
 
-`kero` コマンドは、あなたのシェル、スクリプト、エージェントなど、どのシェルからでもセッションを操作できます。**Kero › コマンドラインツールをインストール…** でインストールします。
+`tuna` コマンドは、あなたのシェル、スクリプト、エージェントなど、どのシェルからでもセッションを操作できます。**tuna › コマンドラインツールをインストール…** でインストールします。
 
 ## 対象
 
@@ -15,24 +15,24 @@ description: kero CLI で、シェルやスクリプトから Kero のセッシ�
 - セッションの名前
 - セッション（フォーカスのあるペインを表す）
 
-Kero の中では、`$KERO_SESSION` と `$KERO_PANE` がコマンドを実行するセッションとペインを示し、それがデフォルトの対象になります。
+tuna の中では、`$TUNA_SESSION` と `$TUNA_PANE` がコマンドを実行するセッションとペインを示し、それがデフォルトの対象になります。
 
 ## セッションとペイン
 
 ```sh
-kero ls                          # すべてのセッションとそのペイン
-kero new -n api -d ~/code/api    # セッションを開始し、その ID を出力
-kero new -- npm run dev          # コマンドを実行するセッションを開始
-kero split --down -- npm test    # このペインの横にペイン
-kero split --url localhost:3000  # ページを表示するブラウザペイン
-kero rename api backend          # セッション名を変更
-kero focus backend               # アプリで表示
-kero close backend               # セッションを終える（ペインを指定するとそのペイン）
-kero close fix-login --remove-worktree   # 専用のワークツリーも削除する
-kero restart <pane>              # 終了したペインのシェルを再び開始
+tuna ls                          # すべてのセッションとそのペイン
+tuna new -n api -d ~/code/api    # セッションを開始し、その ID を出力
+tuna new -- npm run dev          # コマンドを実行するセッションを開始
+tuna split --down -- npm test    # このペインの横にペイン
+tuna split --url localhost:3000  # ページを表示するブラウザペイン
+tuna rename api backend          # セッション名を変更
+tuna focus backend               # アプリで表示
+tuna close backend               # セッションを終える（ペインを指定するとそのペイン）
+tuna close fix-login --remove-worktree   # 専用のワークツリーも削除する
+tuna restart <pane>              # 終了したペインのシェルを再び開始
 ```
 
-`kero new` のオプション:
+`tuna new` のオプション:
 
 | フラグ                      | 意味                                            |
 | --------------------------- | ----------------------------------------------- |
@@ -48,57 +48,57 @@ kero restart <pane>              # 終了したペインのシェルを再び開
 ## 入力と読み取り
 
 ```sh
-kero send api "npm run migrate" --enter   # テキストを入力してから Enter を押す
-kero send api -e 'y\n'                    # \n \r \t \e \xHH のエスケープを解釈
-kero key api ctrl+c                       # キーを押す
-kero read api -n 40                       # 画面の最後の 40 行
-kero read api -a                          # スクロールバックを含む画面
+tuna send api "npm run migrate" --enter   # テキストを入力してから Enter を押す
+tuna send api -e 'y\n'                    # \n \r \t \e \xHH のエスケープを解釈
+tuna key api ctrl+c                       # キーを押す
+tuna read api -n 40                       # 画面の最後の 40 行
+tuna read api -a                          # スクロールバックを含む画面
 ```
 
-`kero key` は `enter`、`tab`、`escape`、`up`、`down`、`left`、`right`、`backspace` と、`ctrl+c` や `ctrl+d` のような修飾キーを理解します。
+`tuna key` は `enter`、`tab`、`escape`、`up`、`down`、`left`、`right`、`backspace` と、`ctrl+c` や `ctrl+d` のような修飾キーを理解します。
 
 ## 待機
 
 ```sh
-kero wait api                             # 作業が止まるまで
-kero wait api --for waiting,error --timeout 10m
-kero prompt review "summarize the diff"   # 送信 + Enter、待機、画面を出力
+tuna wait api                             # 作業が止まるまで
+tuna wait api --for waiting,error --timeout 10m
+tuna prompt review "summarize the diff"   # 送信 + Enter、待機、画面を出力
 ```
 
-`kero wait` は戻るときにペインの状態を出力します。`kero prompt` はテキストと Enter を送り、ペインの作業が止まるまで待ってから画面を出力します。ほかのエージェントに何かを尋ねる最も手早い方法です。
+`tuna wait` は戻るときにペインの状態を出力します。`tuna prompt` はテキストと Enter を送り、ペインの作業が止まるまで待ってから画面を出力します。ほかのエージェントに何かを尋ねる最も手早い方法です。
 
 ### コマンドの終了を待つ
 
-`make test` のようなコマンドは*作業中*と表示されないので、終了を待つには `--wait` を付けて開始します。すると `kero` はそのコマンド自身の終了ステータスで終了します:
+`make test` のようなコマンドは*作業中*と表示されないので、終了を待つには `--wait` を付けて開始します。すると `tuna` はそのコマンド自身の終了ステータスで終了します:
 
 ```sh
-if kero split --down --wait -- make test; then
+if tuna split --down --wait -- make test; then
   echo "tests passed"
 fi
 ```
 
-`kero wait --exit` は、開始時のコマンドをすでに実行しているペインに対して同じことをします:
+`tuna wait --exit` は、開始時のコマンドをすでに実行しているペインに対して同じことをします:
 
 ```sh
-pane=$(kero split --down -- go test ./...)
+pane=$(tuna split --down -- go test ./...)
 # … ほかのことをする …
-kero wait "$pane" --exit --timeout 10m
+tuna wait "$pane" --exit --timeout 10m
 echo "go test exited with $?"
 ```
 
-コマンドの終了後も出力とともにペインは開いたままなので、`kero read` で読めます。コマンドの終了を判断できない `cmd` をシェルにしている場合、コマンドの終了待ちは使えません。
+コマンドの終了後も出力とともにペインは開いたままなので、`tuna read` で読めます。コマンドの終了を判断できない `cmd` をシェルにしている場合、コマンドの終了待ちは使えません。
 
 ## イベントの監視
 
-`kero events` は、セッションとペインに起きたことを起きたときに 1 イベント 1 行で出力し、止めるまで続けます。スクリプトは `kero status` をポーリングせずに、すべてのエージェントを一度に追えます。
+`tuna events` は、セッションとペインに起きたことを起きたときに 1 イベント 1 行で出力し、止めるまで続けます。スクリプトは `tuna status` をポーリングせずに、すべてのエージェントを一度に追えます。
 
 ```sh
-kero events                               # すべてのセッション
-kero events api                           # 1 つのセッション、または 1 つのペイン
-kero events -p kero                       # 1 つのプロジェクトのセッション
-kero events --for waiting,error           # これらの状態になったペインだけ
-kero events --json | jq -r .name          # 1 行に 1 つの JSON オブジェクト
-kero events --for waiting --once          # 最初の 1 件で終了
+tuna events                               # すべてのセッション
+tuna events api                           # 1 つのセッション、または 1 つのペイン
+tuna events -p tuna                       # 1 つのプロジェクトのセッション
+tuna events --for waiting,error           # これらの状態になったペインだけ
+tuna events --json | jq -r .name          # 1 行に 1 つの JSON オブジェクト
+tuna events --for waiting --once          # 最初の 1 件で終了
 ```
 
 ```
@@ -118,25 +118,25 @@ kero events --for waiting --once          # 最初の 1 件で終了
 
 `--json` では、どのイベントにも `event`、`time`（unix ミリ秒）、`session`、`project`、`name`（サイドバーに表示されるセッション名）が付きます。
 
-`kero events` が報告するのは今からの変化です。すでにあるものは `kero ls --json` で確認します。対象を指定すると、対象が閉じたときに止まります。`--once` は最初に一致したイベントで終了し、対象が先に閉じるか `--timeout` が過ぎると `1` で終了します。kerod は状態が落ち着いてから送るので、一瞬だけの状態（短い作業中など）は出ないことがあります。
+`tuna events` が報告するのは今からの変化です。すでにあるものは `tuna ls --json` で確認します。対象を指定すると、対象が閉じたときに止まります。`--once` は最初に一致したイベントで終了し、対象が先に閉じるか `--timeout` が過ぎると `1` で終了します。tunad は状態が落ち着いてから送るので、一瞬だけの状態（短い作業中など）は出ないことがあります。
 
 <a id="browsing"></a>
 
 ## ブラウザの操作
 
-`kero browser` は、`kero send` と `kero read` がターミナルを操作するのと同じように、ブラウザペインのページを操作します: クリック、入力、ページの読み取り、スクリーンショット。対象はブラウザペイン、またはセッション（そのブラウザ）です。対象を指定しなければ、実行したセッションのブラウザを操作します。
+`tuna browser` は、`tuna send` と `tuna read` がターミナルを操作するのと同じように、ブラウザペインのページを操作します: クリック、入力、ページの読み取り、スクリーンショット。対象はブラウザペイン、またはセッション（そのブラウザ）です。対象を指定しなければ、実行したセッションのブラウザを操作します。
 
 ```sh
-kero split --url localhost:3000            # ページを開き、ペインの ID を出力
-kero browser open localhost:3000/todos     # ページへ移動し、読み込みを待つ
-kero browser type '#new-todo' "Buy milk" --enter
-kero browser wait '.todo-list li'          # 要素が表示されるまで
-kero browser wait --text "1 item left"     # テキストが表示されるまで
-kero browser text                          # ページのテキスト
-kero browser text h1                       # 要素のテキスト
-kero browser click 'button[type=submit]'
-kero browser screenshot -o page.png
-kero browser eval 'document.title'
+tuna split --url localhost:3000            # ページを開き、ペインの ID を出力
+tuna browser open localhost:3000/todos     # ページへ移動し、読み込みを待つ
+tuna browser type '#new-todo' "Buy milk" --enter
+tuna browser wait '.todo-list li'          # 要素が表示されるまで
+tuna browser wait --text "1 item left"     # テキストが表示されるまで
+tuna browser text                          # ページのテキスト
+tuna browser text h1                       # 要素のテキスト
+tuna browser click 'button[type=submit]'
+tuna browser screenshot -o page.png
+tuna browser eval 'document.title'
 ```
 
 | コマンド                        | 動作 |
@@ -153,28 +153,28 @@ kero browser eval 'document.title'
 
 セレクタは CSS セレクタです。シェルでは引用符で囲んでください。要素が必要なコマンドは要素が現れるのを待ち、`--timeout`（デフォルト `10s`）でそれらとページの読み込みにかけてよい時間を設定します。`type` と `eval` は、`-` で標準入力からテキストを受け取ります。
 
-クリックと入力は本物のマウスとキーボードと同じイベントを送るので、React などのフレームワークで作られたページもそれを受け取ります。スクリーンショットにはペインが画面に表示されている必要があります: 先に `kero focus` で表示してください。それ以外は、表示されているかどうかにかかわらず、どのブラウザペインでも動きます。
+クリックと入力は本物のマウスとキーボードと同じイベントを送るので、React などのフレームワークで作られたページもそれを受け取ります。スクリーンショットにはペインが画面に表示されている必要があります: 先に `tuna focus` で表示してください。それ以外は、表示されているかどうかにかかわらず、どのブラウザペインでも動きます。
 
-`kero do` と同じく、`kero browser` には **設定 › エージェント** のリモート操作と、アプリが開いていることが必要です。
+`tuna do` と同じく、`tuna browser` には **設定 › エージェント** のリモート操作と、アプリが開いていることが必要です。
 
 ## 過去の会話
 
 ```sh
-kero history                     # ペインで動いたエージェントの会話を、最後に動いたものから順に
-kero history -p kero -n 50       # ひとつのプロジェクトの会話を、最大 50 件
-kero history login --json        # 「login」に一致するものを JSON で
-kero resume 13b9                 # 再開する: ID、その先頭部分、または名前で
-kero resume fix-login -f         # 再開して、アプリに表示する
+tuna history                     # ペインで動いたエージェントの会話を、最後に動いたものから順に
+tuna history -p tuna -n 50       # ひとつのプロジェクトの会話を、最大 50 件
+tuna history login --json        # 「login」に一致するものを JSON で
+tuna resume 13b9                 # 再開する: ID、その先頭部分、または名前で
+tuna resume fix-login -f         # 再開して、アプリに表示する
 ```
 
-`kero resume` は、その会話を再開するセッションを会話のディレクトリとプロジェクトで開始し、セッションの ID を表示します。まだペインで動いている会話なら、そのセッションを返します。[過去の会話](./sessions.md#past-conversations)を参照してください。
+`tuna resume` は、その会話を再開するセッションを会話のディレクトリとプロジェクトで開始し、セッションの ID を表示します。まだペインで動いている会話なら、そのセッションを返します。[過去の会話](./sessions.md#past-conversations)を参照してください。
 
 ## 状態
 
 ```sh
-kero status api --json                    # 状態、プログラム、ディレクトリ
-kero report working "Running migrations"  # 自分の状態を報告
-kero notify "Need your input"             # このペインを対応が必要なものとして示す
+tuna status api --json                    # 状態、プログラム、ディレクトリ
+tuna report working "Running migrations"  # 自分の状態を報告
+tuna notify "Need your input"             # このペインを対応が必要なものとして示す
 ```
 
 状態については[状態と通知](./status.md)を参照してください。
@@ -182,9 +182,9 @@ kero notify "Need your input"             # このペインを対応が必要な
 ## 変更
 
 ```sh
-kero diff                                 # ペインの未コミットの変更を git diff の形式で
-kero diff --turn                          # エージェントが直前のターンで変更したもの
-kero diff review --branch                 # デフォルトブランチ以降
+tuna diff                                 # ペインの未コミットの変更を git diff の形式で
+tuna diff --turn                          # エージェントが直前のターンで変更したもの
+tuna diff review --branch                 # デフォルトブランチ以降
 ```
 
 [変更](./changes.md)を参照してください。
@@ -192,62 +192,62 @@ kero diff review --branch                 # デフォルトブランチ以降
 ## 構成とセットアップ
 
 ```sh
-kero config path                 # 設定ファイルの場所
-kero config show                 # すべてのキーとその値
-kero config show --defaults      # すべてのキーの初期値
-kero config edit                 # $EDITOR で開く
-kero config check                # 不明なキーと不正な値を報告
-kero projects                    # プロジェクトを一覧
-kero skill setup                 # コーディングエージェントに kero の使い方を教える
-kero daemon status|stop|restart  # kerod を管理
-kero daemon install-service      # マシンの起動とともに kerod を実行（systemd、launchd）
-kero daemon serve                # サービスマネージャ向けに kerod をフォアグラウンドで実行
-kero clients                     # kerod に接続しているもの
-kero pets                        # ウィンドウ上端のペット、表示中のものが先頭
-kero pets use <名前|kero|codex>  # ペットを表示する：~/.codex/pets のもの、または Kero のもの
-kero pets install <pack.zip>     # Codex ペットパック（.codex-pet.zip）をインストールする
-kero pets rm <名前>              # Kero がインストールしたペットを削除する
+tuna config path                 # 設定ファイルの場所
+tuna config show                 # すべてのキーとその値
+tuna config show --defaults      # すべてのキーの初期値
+tuna config edit                 # $EDITOR で開く
+tuna config check                # 不明なキーと不正な値を報告
+tuna projects                    # プロジェクトを一覧
+tuna skill setup                 # コーディングエージェントに tuna の使い方を教える
+tuna daemon status|stop|restart  # tunad を管理
+tuna daemon install-service      # マシンの起動とともに tunad を実行（systemd、launchd）
+tuna daemon serve                # サービスマネージャ向けに tunad をフォアグラウンドで実行
+tuna clients                     # tunad に接続しているもの
+tuna pets                        # ウィンドウ上端のペット、表示中のものが先頭
+tuna pets use <名前|tuna|codex>  # ペットを表示する：~/.codex/pets のもの、または tuna のもの
+tuna pets install <pack.zip>     # Codex ペットパック（.codex-pet.zip）をインストールする
+tuna pets rm <名前>              # tuna がインストールしたペットを削除する
 ```
 
 ## Feishu
 
 ```sh
-kero feishu setup                # アプリの ID と secret を尋ね、保存して接続し、次にすることを示す
-kero feishu status               # ボットが接続しているか
-kero feishu test                 # Feishu がアプリを認識するか確認する
-kero feishu send <チャット> <テキスト…>  # チャット ID でメッセージを送る
+tuna feishu setup                # アプリの ID と secret を尋ね、保存して接続し、次にすることを示す
+tuna feishu status               # ボットが接続しているか
+tuna feishu test                 # Feishu がアプリを認識するか確認する
+tuna feishu send <チャット> <テキスト…>  # チャット ID でメッセージを送る
 ```
 
 Feishu のチャットは、結び付いたセッションのコーディングエージェントを動かします: `/new` で始め、`/use` で開いているセッションに結び付け、そのほかのテキストはプロンプトです。[Feishu](./feishu.md)を参照してください。
 
 ## ほかのマシン
 
-コマンドの前に `-H <host>` を付けるか `$KERO_HOST` を設定すると、セッションに対するコマンドを別のマシンの kerod に向けられます: 追加したホスト、または `me@devbox` や `wsl://Ubuntu` のようなアドレスです。[リモートホスト](./remote.md)を参照してください。
+コマンドの前に `-H <host>` を付けるか `$TUNA_HOST` を設定すると、セッションに対するコマンドを別のマシンの tunad に向けられます: 追加したホスト、または `me@devbox` や `wsl://Ubuntu` のようなアドレスです。[リモートホスト](./remote.md)を参照してください。
 
 ```sh
-kero hosts                       # 追加したホスト
-kero hosts add devbox me@devbox  # 追加する（アプリにも表示される）
-kero hosts check devbox          # 接続して、結果を表示
-kero hosts install devbox        # SSH でそこに Kero をインストール
-kero ls --all                    # このマシンとすべてのホストのセッション
-kero -H devbox ls
-kero -H devbox new -n review -- claude
-kero -H devbox daemon update     # そこの Kero をこちらのバージョンにアップデート
+tuna hosts                       # 追加したホスト
+tuna hosts add devbox me@devbox  # 追加する（アプリにも表示される）
+tuna hosts check devbox          # 接続して、結果を表示
+tuna hosts install devbox        # SSH でそこに tuna をインストール
+tuna ls --all                    # このマシンとすべてのホストのセッション
+tuna -H devbox ls
+tuna -H devbox new -n review -- claude
+tuna -H devbox daemon update     # そこの tuna をこちらのバージョンにアップデート
 ```
 
-ペインの中では、`kero` はアプリがどこにあっても、ペインが動いているマシンの kerod と通信します。
+ペインの中では、`tuna` はアプリがどこにあっても、ペインが動いているマシンの tunad と通信します。
 
-`kero ls --all` はすべてのホストに同時に問い合わせ、それぞれのセッションを `-H` に渡す名前（このマシンは `local`）の下に一覧表示します。届かないホストは、セッションの代わりにその理由を表示します。`--json` を付けると `{host, addr, error, sessions}` のリストを出力します。
+`tuna ls --all` はすべてのホストに同時に問い合わせ、それぞれのセッションを `-H` に渡す名前（このマシンは `local`）の下に一覧表示します。届かないホストは、セッションの代わりにその理由を表示します。`--json` を付けると `{host, addr, error, sessions}` のリストを出力します。
 
 ## アプリのアクションを実行する
 
-`kero do` は、メニューと同じアプリのアクションをどれでも実行します。**設定 › エージェント** のリモート操作（デフォルトでオン）が必要です。
+`tuna do` は、メニューと同じアプリのアクションをどれでも実行します。**設定 › エージェント** のリモート操作（デフォルトでオン）が必要です。
 
 ```sh
-kero actions                     # 一覧を表示
-kero do pane.split.right
-kero do pane.browser url=localhost:3000
-kero do sidebar.toggle
+tuna actions                     # 一覧を表示
+tuna do pane.split.right
+tuna do pane.browser url=localhost:3000
+tuna do sidebar.toggle
 ```
 
 ## 終了ステータス
@@ -258,8 +258,8 @@ kero do sidebar.toggle
 | `1`    | 失敗                                 |
 | `2`    | 使い方の誤り                         |
 | `3`    | 対象が存在しない、またはあいまい     |
-| `4`    | kerod に接続できない                 |
+| `4`    | tunad に接続できない                 |
 
-プログラムを待つコマンド（`kero wait --exit` と `--wait`）は、代わりにそのプログラムの終了ステータスで終了します。ペインのシェルがエラーで終了したときの `kero wait` も同じです。タイムアウトした待機は `1` で終了します。
+プログラムを待つコマンド（`tuna wait --exit` と `--wait`）は、代わりにそのプログラムの終了ステータスで終了します。ペインのシェルがエラーで終了したときの `tuna wait` も同じです。タイムアウトした待機は `1` で終了します。
 
 `ls`、`status`、`projects` に `--json` を付けると、機械で読める形式で出力します。

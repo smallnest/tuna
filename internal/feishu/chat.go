@@ -9,8 +9,8 @@ import (
 
 	"github.com/larksuite/oapi-sdk-go/v3/event/dispatcher/callback"
 
-	"kero/internal/proto"
-	"kero/internal/settings"
+	"tuna/internal/proto"
+	"tuna/internal/settings"
 )
 
 // A turn shows in a chat by the user's own message (feishu-cards): a
@@ -151,7 +151,7 @@ func (b *Bot) read(id string) string {
 const toolTail = 16
 
 // onCardAction answers the click of one of the bot's cards: the button
-// that opens its session in Kero.
+// that opens its session in tuna.
 func (b *Bot) onCardAction(ctx context.Context, e *callback.CardActionTriggerEvent) (*callback.CardActionTriggerResponse, error) {
 	if e == nil || e.Event == nil || e.Event.Action == nil {
 		return nil, nil
@@ -160,13 +160,13 @@ func (b *Bot) onCardAction(ctx context.Context, e *callback.CardActionTriggerEve
 	if e.Event.Operator != nil {
 		openID = e.Event.Operator.OpenID
 	}
-	if v, ok := e.Event.Action.Value["kero"]; ok && fmt.Sprint(v) == "perm" {
+	if v, ok := e.Event.Action.Value["tuna"]; ok && fmt.Sprint(v) == "perm" {
 		return b.onAskAction(e)
 	}
-	if v, ok := e.Event.Action.Value["kero"]; ok && fmt.Sprint(v) == "choice" {
+	if v, ok := e.Event.Action.Value["tuna"]; ok && fmt.Sprint(v) == "choice" {
 		return b.onChoiceAction(e)
 	}
-	if v, ok := e.Event.Action.Value["kero"]; !ok || fmt.Sprint(v) != "open" {
+	if v, ok := e.Event.Action.Value["tuna"]; !ok || fmt.Sprint(v) != "open" {
 		return nil, nil
 	}
 	msg := ""

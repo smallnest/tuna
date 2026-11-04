@@ -1,4 +1,4 @@
-# Releasing Kero
+# Releasing tuna
 
 A release is a tag: pushing `vX.Y.Z` runs the Release workflow
 (`.github/workflows/release.yml`), which builds the app for macOS, Windows
@@ -11,7 +11,7 @@ it all in a draft release. Publishing the draft releases it.
    changes, a minor for features.
 2. Set it in `mygo.json` (`"version"`).
 3. Add its section to the top of `CHANGELOG.md`: what changed since the
-   last release (`git log vX.Y.Z..HEAD`), for the people who use Kero,
+   last release (`git log vX.Y.Z..HEAD`), for the people who use tuna,
    not for who reads the code. Name settings as the app shows them
    (Settings › Hosts), credit outside contributors (Thanks @name), and
    say when hosts get a change with their next update. Leave out what
@@ -49,6 +49,6 @@ it all in a draft release. Publishing the draft releases it.
    published release stays as it is.
 
 The tag must match `mygo.json`'s version, or the run stops at its first
-job. Kero is released, so changes keep older apps, kerods and config
+job. tuna is released, so changes keep older apps, tunads and config
 files working: `proto.Version` goes up only for a breaking change to the
 protocol, not for a new optional field or frame.

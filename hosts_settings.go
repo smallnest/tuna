@@ -11,11 +11,11 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 
-	"kero/internal/remote"
-	"kero/internal/settings"
-	"kero/internal/tailscale"
+	"tuna/internal/remote"
+	"tuna/internal/settings"
+	"tuna/internal/tailscale"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
 // hostDraft is the Hosts page's form, which adds a host, or a host's,
@@ -29,7 +29,7 @@ type hostDraft struct {
 
 // hostsPage is Settings › Hosts: the machines whose sessions the app
 // shows beside this one's, which the configuration's host keys keep, as
-// `kero hosts` does.
+// `tuna hosts` does.
 func (a *App) hostsPage(c *ui.Context, pal *palette) {
 	settingsGroup(c, pal, locales.SetHosts(), locales.SetHostsDetail(), func() {
 		if len(a.hosts) == 1 {
@@ -39,7 +39,7 @@ func (a *App) hostsPage(c *ui.Context, pal *palette) {
 			a.hostRow(c, pal, h)
 		}
 	})
-	docLink(c, pal, "hosts-docs", locales.SetHostsDocs(), "https://kero.sh/docs/remote")
+	docLink(c, pal, "hosts-docs", locales.SetHostsDocs(), "https://tuna.sh/docs/remote")
 	a.tailcatGroup(c, pal)
 	settingsGroup(c, pal, locales.SetHostAdd(), locales.SetHostAddDetail(), func() {
 		d := &a.ss.host
@@ -73,9 +73,9 @@ type tailnetLook struct {
 	copied  time.Time // when the address was copied, for a check mark
 }
 
-// listenGroup turns this machine into a host for Kero elsewhere: kerod's
+// listenGroup turns this machine into a host for tuna elsewhere: tunad's
 // listener on the tailnet, the configuration's tailnet:// listen, which
-// kerod follows as it changes.
+// tunad follows as it changes.
 func (a *App) listenGroup(c *ui.Context, pal *palette) {
 	i := slices.IndexFunc(a.set.Listen, func(l string) bool {
 		spec, err := remote.ParseListen(l)
@@ -131,7 +131,7 @@ func (a *App) listenGroup(c *ui.Context, pal *palette) {
 	})
 }
 
-// listenAddress says where Kero elsewhere finds this machine's listener,
+// listenAddress says where tuna elsewhere finds this machine's listener,
 // asking tailscaled for its name now and then, and the address, once it
 // is known.
 func (a *App) listenAddress(port string) (detail, addr string) {

@@ -1,24 +1,24 @@
 ---
 title: Configuration
-description: Kero's configuration file, its keys and their defaults.
+description: tuna's configuration file, its keys and their defaults.
 ---
 
 # Configuration
 
-Kero keeps its settings in one plain-text file. The Settings window (<kbd>⌘</kbd> <kbd>,</kbd>) edits it for you, keeping your comments and order, and Kero reloads it when you edit it by hand.
+tuna keeps its settings in one plain-text file. The Settings window (<kbd>⌘</kbd> <kbd>,</kbd>) edits it for you, keeping your comments and order, and tuna reloads it when you edit it by hand.
 
 ## The file
 
-Kero reads, in order of preference:
+tuna reads, in order of preference:
 
-1. `$KERO_CONFIG`
-2. `$XDG_CONFIG_HOME/kero/config`
-3. `~/.config/kero/config`
+1. `$TUNA_CONFIG`
+2. `$XDG_CONFIG_HOME/tuna/config`
+3. `~/.config/tuna/config`
 
 It uses Ghostty's syntax: one `key = value` per line, `#` for comments, and repeated lines for keys that hold lists. Where a key means what it means in Ghostty, it has Ghostty's name.
 
 ```ini
-# ~/.config/kero/config
+# ~/.config/tuna/config
 font-size = 14
 theme = light:GitHub Light Default,dark:Catppuccin Mocha
 cursor-style = bar
@@ -32,9 +32,9 @@ keybind = cmd+shift+d=pane.split.down
 The file only needs what you change. Everything else keeps its default.
 
 ```sh
-kero config edit              # open it in $EDITOR
-kero config show              # every key with its current value
-kero config check             # report unknown keys and bad values
+tuna config edit              # open it in $EDITOR
+tuna config show              # every key with its current value
+tuna config check             # report unknown keys and bad values
 ```
 
 ## General
@@ -46,11 +46,11 @@ kero config check             # report unknown keys and bad values
 | `sidebar-rows`          | `detailed` | How the sidebar shows a session: `detailed`, with its status message, else its branch and changes, on a second line; or `compact`, on one line |
 | `focus-follows-mouse`   | `false`   | Focus the pane the pointer moves into                         |
 | `confirm-close`         | `true`    | Ask before closing a pane that a program is running in        |
-| `restore-sessions`      | `true`    | Start sessions again after kerod restarts, as after a reboot  |
+| `restore-sessions`      | `true`    | Start sessions again after tunad restarts, as after a reboot  |
 | `resume-agents`         | `true`    | As sessions start again, resume the conversation of the agent each pane ran |
-| `quit-ends-sessions`    | `false`   | Quitting, as with the close button, ⌘Q or the menu, ends this machine's sessions and their programs, and stops kerod, as Quit and End All Sessions does; it asks first, as `confirm-close` says, while a program runs. Other machines' sessions keep running ([more](./sessions.md#quitting)) |
+| `quit-ends-sessions`    | `false`   | Quitting, as with the close button, ⌘Q or the menu, ends this machine's sessions and their programs, and stops tunad, as Quit and End All Sessions does; it asks first, as `confirm-close` says, while a program runs. Other machines' sessions keep running ([more](./sessions.md#quitting)) |
 | `session-history`       | `false`   | List the agents' ended conversations in the sidebar, to resume or archive ([more](./sessions.md#ended-sessions)) |
-| `macos-show-app-icon`   | `dock-and-menubar` | Where Kero's icon shows on macOS: `dock-and-menubar`, `dock` or `menubar`. While it's in the menu bar, closing the window keeps Kero running there. Windows and Linux always show it in the notification area, where closing the window does the same |
+| `macos-show-app-icon`   | `dock-and-menubar` | Where tuna's icon shows on macOS: `dock-and-menubar`, `dock` or `menubar`. While it's in the menu bar, closing the window keeps tuna running there. Windows and Linux always show it in the notification area, where closing the window does the same |
 
 ## Appearance
 
@@ -64,17 +64,17 @@ kero config check             # report unknown keys and bad values
 | `window-blur`        | `true`   | Blur the desktop behind the translucent background; off is plain transparency |
 | `pane-opacity`       | `0.82`   | How much of the window's background shows in a terminal while the window is translucent, 0 to 1, as `window-opacity`: 0 shows the desktop alone; the text stays opaque |
 | `pane-blur`          | `false`  | Blur what shows through the terminals; off is plain transparency |
-| `pet`                | `true`   | Kero the frog, who follows your sessions from the window's top edge |
-| `pet-offset`         | `0.5`    | Where Kero stands, 0 to 1 across the window; drag it there       |
-| `pet-set`            | `kero`   | The pet on the window's edge: `kero` the frog, `codex` for the Codex app's active pet, or a pet's directory name in `~/.codex/pets`
+| `pet`                | `true`   | tuna the frog, who follows your sessions from the window's top edge |
+| `pet-offset`         | `0.5`    | Where tuna stands, 0 to 1 across the window; drag it there       |
+| `pet-set`            | `tuna`   | The pet on the window's edge: `tuna` the frog, `codex` for the Codex app's active pet, or a pet's directory name in `~/.codex/pets`
 | `pet-size`           | `1.5`    | How tall a Codex pet shows, against the Codex app's size: 0.5 to 3
 
 ## Terminal
 
 | Key                   | Default | Description                                                              |
 | --------------------- | ------- | ------------------------------------------------------------------------ |
-| `theme`               | `kero`  | Terminal colors: `kero`, any Ghostty theme, or `light:<theme>,dark:<theme>` |
-| `font-family`         |         | Empty for JetBrains Mono Nerd Font, which Kero includes; `monospace` for the system's; or any installed family |
+| `theme`               | `tuna`  | Terminal colors: `tuna`, any Ghostty theme, or `light:<theme>,dark:<theme>` |
+| `font-family`         |         | Empty for JetBrains Mono Nerd Font, which tuna includes; `monospace` for the system's; or any installed family |
 | `font-size`           | `13`    | In points                                                                |
 | `font-weight`         | `400`   | `100` to `900`                                                           |
 | `line-height`         | `1.22`  | A multiple of the font's                                                 |
@@ -113,18 +113,18 @@ kero config check             # report unknown keys and bad values
 
 | Key              | Default | Description                                         |
 | ---------------- | ------- | --------------------------------------------------- |
-| `remote-control` | `true`  | Let `kero do` and `kero focus` drive the app        |
+| `remote-control` | `true`  | Let `tuna do` and `tuna focus` drive the app        |
 
 ## Hosts
 
-Other machines whose sessions the app shows, and `kero -H` reaches. See [Remote Hosts](./remote.md).
+Other machines whose sessions the app shows, and `tuna -H` reaches. See [Remote Hosts](./remote.md).
 
 | Key            | Default | Description |
 | -------------- | ------- | ----------- |
-| `host`         |         | A host, as `name=address`: `me@devbox` or `ssh://…` over SSH, `wsl://distro`, `http(s)://…` for kerod's tailnet listener. Add ` remote-control` after it to let its programs drive the app, and ` color=teal` (red, orange, amber, green, teal, blue, purple or pink) to mark its sessions. Repeat it for each host |
-| `listen`       |         | Let Kero on other machines reach this one: `tailnet://:7373` on its Tailscale addresses, `tailnet-serve://` for Tailscale Serve. Repeat it for each |
+| `host`         |         | A host, as `name=address`: `me@devbox` or `ssh://…` over SSH, `wsl://distro`, `http(s)://…` for tunad's tailnet listener. Add ` remote-control` after it to let its programs drive the app, and ` color=teal` (red, orange, amber, green, teal, blue, purple or pink) to mark its sessions. Repeat it for each host |
+| `listen`       |         | Let tuna on other machines reach this one: `tailnet://:7373` on its Tailscale addresses, `tailnet-serve://` for Tailscale Serve. Repeat it for each |
 | `listen-allow` |         | Who besides the machine's owner may connect: a tailnet login, `tag:name`, or `*` for anyone on the tailnet. Repeat it for each |
-| `remote-updates` | `false` | Let Kero on your other machines update the Kero app here to its version, which relaunches it |
+| `remote-updates` | `false` | Let tuna on your other machines update the tuna app here to its version, which relaunches it |
 
 ## Git
 
@@ -133,7 +133,7 @@ Other machines whose sessions the app shows, and `kero -H` reaches. See [Remote 
 | `git-status`  | `true`  | Show each session's branch and [changes](./changes.md)                                            |
 | `diff-layout` | `auto`  | Diffs in the changes panel: `unified`, `split` (side by side), or `auto`, side by side once it's wide |
 | `worktree-base` | `default` | What a [session's own worktree](./changes.md#sessions-in-their-own-worktree) branches from: `default`, the repository's default branch, or `current`, the branch of the session you're in |
-| `worktree-dir` |        | Where sessions' own worktrees go, each under its repository's name; empty for `.kero/worktrees` in the repository |
+| `worktree-dir` |        | Where sessions' own worktrees go, each under its repository's name; empty for `.tuna/worktrees` in the repository |
 
 ## Browser
 
@@ -142,7 +142,7 @@ Other machines whose sessions the app shows, and `kero -H` reaches. See [Remote 
 | `browser-block-ads`   | `true`                     | [Block ads and trackers](./panes.md#blocking-ads) in browser panes                  |
 | `browser-filter-list` | `easylist`, `easyprivacy`  | A filter list to block with. Repeat it for each list; leave it empty for none       |
 
-`browser-filter-list` takes the lists Kero offers by name, or the `https://` URL of any list in Adblock Plus syntax:
+`browser-filter-list` takes the lists tuna offers by name, or the `https://` URL of any list in Adblock Plus syntax:
 
 | Name               | List                                                                |
 | ------------------ | ------------------------------------------------------------------- |
@@ -171,4 +171,4 @@ keybind = cmd+k=palette.open
 keybind = cmd+b=unbind
 ```
 
-Run `kero actions` for every action id, and see [Keyboard Shortcuts](./shortcuts.md) for the defaults.
+Run `tuna actions` for every action id, and see [Keyboard Shortcuts](./shortcuts.md) for the defaults.

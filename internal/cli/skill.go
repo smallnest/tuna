@@ -7,120 +7,120 @@ import (
 	"slices"
 	"strings"
 
-	"kero/internal/proto"
+	"tuna/internal/proto"
 )
 
-// skillGuide teaches a coding agent kero: the skill `kero skill setup`
-// installs, from this binary, so that it follows kero's updates.
+// skillGuide teaches a coding agent tuna: the skill `tuna skill setup`
+// installs, from this binary, so that it follows tuna's updates.
 const skillGuide = `---
-name: kero
-description: Drive terminal sessions in Kero — start agents and commands in their own sessions or panes, here or on another machine, type into them, wait for them, read their screens, and report your own status. Use when running inside Kero ($KERO_PANE is set) and the task needs another terminal, a long-running process, a parallel agent, or the user's attention.
+name: tuna
+description: Drive terminal sessions in tuna — start agents and commands in their own sessions or panes, here or on another machine, type into them, wait for them, read their screens, and report your own status. Use when running inside tuna ($TUNA_PANE is set) and the task needs another terminal, a long-running process, a parallel agent, or the user's attention.
 ---
 
-# Kero
+# tuna
 
-You run inside Kero, a terminal whose sessions keep running in the
-background. $KERO_SESSION is your session and $KERO_PANE your pane; the
-` + "`kero`" + ` command drives them. A target is a session or a pane id (a
+You run inside tuna, a terminal whose sessions keep running in the
+background. $TUNA_SESSION is your session and $TUNA_PANE your pane; the
+` + "`tuna`" + ` command drives them. A target is a session or a pane id (a
 prefix works), or a session's name; a session stands for its focused pane.
 
 ## Run something beside you
 
-    kero split --down -- npm run dev          # a pane under yours; prints its id
-    kero new -n review -- claude              # a session of its own
-    kero new -n tests -d ~/code/app -- go test ./...
-    kero split --url localhost:3000           # a browser pane, to show the user a page
+    tuna split --down -- npm run dev          # a pane under yours; prints its id
+    tuna new -n review -- claude              # a session of its own
+    tuna new -n tests -d ~/code/app -- go test ./...
+    tuna split --url localhost:3000           # a browser pane, to show the user a page
 
 ## Drive it
 
-    kero send <target> "some text" --enter    # type, then press Enter
-    kero key <target> ctrl+c                  # enter, escape, up, tab, ctrl+d…
-    kero prompt <target> "run the tests"      # send + Enter, wait, print screen
-    kero wait <target> [--for idle,waiting,error,exited] [--timeout 10m]
-    kero wait <target> --exit                 # until its command ends; exits with its status
-    kero new --worktree <branch> -- claude    # an agent on a new branch, in a worktree of its own
-    kero events [target] [--for waiting,error] [--json]
+    tuna send <target> "some text" --enter    # type, then press Enter
+    tuna key <target> ctrl+c                  # enter, escape, up, tab, ctrl+d…
+    tuna prompt <target> "run the tests"      # send + Enter, wait, print screen
+    tuna wait <target> [--for idle,waiting,error,exited] [--timeout 10m]
+    tuna wait <target> --exit                 # until its command ends; exits with its status
+    tuna new --worktree <branch> -- claude    # an agent on a new branch, in a worktree of its own
+    tuna events [target] [--for waiting,error] [--json]
                                               # a line per change, as it happens
-    kero history [query] [--json]             # agents' past conversations, to resume
-    kero resume <conversation>                # a session resuming one
-    kero read <target> [-n 40] [-a]           # the screen, or with scrollback
-    kero status <target> --json               # status, program, directory
-    kero ls                                   # every session and pane here
+    tuna history [query] [--json]             # agents' past conversations, to resume
+    tuna resume <conversation>                # a session resuming one
+    tuna read <target> [-n 40] [-a]           # the screen, or with scrollback
+    tuna status <target> --json               # status, program, directory
+    tuna ls                                   # every session and pane here
 
 A pane's status is working, waiting (it needs the user), idle, error or
-exited. ` + "`kero wait`" + ` with no --for waits until it stops working. A
+exited. ` + "`tuna wait`" + ` with no --for waits until it stops working. A
 command such as a test run doesn't show as working: wait for it with --exit,
 or start it with --wait, which exits with the command's status:
 
-    pane=$(kero split --down -- go test ./...)
-    kero wait "$pane" --exit || kero read "$pane" -n 80
-    kero split --down --wait -- make build    # the same, in one step
+    pane=$(tuna split --down -- go test ./...)
+    tuna wait "$pane" --exit || tuna read "$pane" -n 80
+    tuna split --down --wait -- make build    # the same, in one step
 
 ## Hand work to another machine
 
-The user may have added other machines to Kero, each with a kerod of its
-own: ` + "`kero ls --all`" + ` lists the sessions here and on every one of them,
+The user may have added other machines to tuna, each with a tunad of its
+own: ` + "`tuna ls --all`" + ` lists the sessions here and on every one of them,
 under the name that ` + "`-H`" + ` takes, before the command:
 
-    kero ls --all [--json]                    # every machine's sessions; a host out of reach says why
-    kero hosts                                # the machines, and their addresses
-    kero -H build new -n tests -d ~/code/app -- go test ./...
-    kero -H build new -n review -- claude     # an agent there
-    kero -H build prompt review "run the tests and fix them"
-    kero -H build wait review
-    kero -H build read review -n 80
-    kero -H build close review
+    tuna ls --all [--json]                    # every machine's sessions; a host out of reach says why
+    tuna hosts                                # the machines, and their addresses
+    tuna -H build new -n tests -d ~/code/app -- go test ./...
+    tuna -H build new -n review -- claude     # an agent there
+    tuna -H build prompt review "run the tests and fix them"
+    tuna -H build wait review
+    tuna -H build read review -n 80
+    tuna -H build close review
 
 Every command acting on sessions takes -H. An id or a name is of its own
 machine's sessions: give the same -H each time you act on one. With -H,
 your own session is no default target, so name one each time, even for
 split or notify. Paths there are that machine's, and without -d a session
-starts in its project's directory, or in the home. kero focus, kero do
-and kero browser drive the user's app, which a host may do only with its
+starts in its project's directory, or in the home. tuna focus, tuna do
+and tuna browser drive the user's app, which a host may do only with its
 Remote Control on, in Settings › Hosts: if it is off, say so rather than
 work around it.
 
 ## Use a web page
 
 A browser pane's page is yours to drive, as a user would, to check what
-you built: open it with kero split --url, then
+you built: open it with tuna split --url, then
 
-    kero browser open localhost:3000/todos     # go to a page, wait for it to load
-    kero browser snapshot                      # roles, names and refs: button "Add" [ref=e5]
-    kero browser click --ref e5                # click what a snapshot showed
-    kero browser type --ref e3 "Buy milk"      # fill a field (--enter submits)
-    kero browser click 'button[type=submit]'   # or name an element by CSS selector
-    kero browser wait --text "Welcome"         # or wait <selector>; --timeout 30s
-    kero browser text [selector]               # the page's text, or an element's
-    kero browser html [selector]
-    kero browser eval 'document.title'         # run JavaScript, print its value
-    kero browser screenshot -o /tmp/page.png   # shown or not, without the focus
-    kero browser back|forward|reload
-    kero browser cookies save state.json       # or load: Playwright's, or cookies.txt
+    tuna browser open localhost:3000/todos     # go to a page, wait for it to load
+    tuna browser snapshot                      # roles, names and refs: button "Add" [ref=e5]
+    tuna browser click --ref e5                # click what a snapshot showed
+    tuna browser type --ref e3 "Buy milk"      # fill a field (--enter submits)
+    tuna browser click 'button[type=submit]'   # or name an element by CSS selector
+    tuna browser wait --text "Welcome"         # or wait <selector>; --timeout 30s
+    tuna browser text [selector]               # the page's text, or an element's
+    tuna browser html [selector]
+    tuna browser eval 'document.title'         # run JavaScript, print its value
+    tuna browser screenshot -o /tmp/page.png   # shown or not, without the focus
+    tuna browser back|forward|reload
+    tuna browser cookies save state.json       # or load: Playwright's, or cookies.txt
 
 Refs last until the page goes to another; one whose element is gone
 fails: take a new snapshot.
 
-With no target, kero browser drives your session's browser pane; name
-one (kero browser <target> text) when there are several. It needs the app
+With no target, tuna browser drives your session's browser pane; name
+one (tuna browser <target> text) when there are several. It needs the app
 open and Remote Control on, in Settings › Agents.
 
 ## Tell the user
 
-    kero report working "Migrating the database" --progress 40
-    kero report blocked "Approve the production deploy?" --kind permission
-    kero report done "Deployed to staging"
-    kero notify "Need your API key to continue"
+    tuna report working "Migrating the database" --progress 40
+    tuna report blocked "Approve the production deploy?" --kind permission
+    tuna report done "Deployed to staging"
+    tuna notify "Need your API key to continue"
 
-Reports are OSC 7501 sequences: Kero shows them in its sidebar, and
+Reports are OSC 7501 sequences: tuna shows them in its sidebar, and
 notifies the user when you are blocked or done while they look elsewhere.
 Report blocked only when you truly cannot go on without them.
 
 ## Etiquette
 
-- Close what you started when it is done: ` + "`kero close <target>`" + `.
+- Close what you started when it is done: ` + "`tuna close <target>`" + `.
 - Never type into a pane you did not start unless the user asked.
-- Exit status 3 means no such target, 4 that Kero is not running.
+- Exit status 3 means no such target, 4 that tuna is not running.
 `
 
 func skillCmd(args []string) error {
@@ -181,7 +181,7 @@ func skillCmd(args []string) error {
 			}
 		}
 		if sub == "setup" && !f.set["dry"] && len(hooks) > 0 {
-			fmt.Println("\nAgents started from now on in Kero learn which session they're in.")
+			fmt.Println("\nAgents started from now on in tuna learn which session they're in.")
 			for _, h := range hooks {
 				if note := map[string]string{
 					"claude":   "Claude Code runs hooks only in folders you trust.",
@@ -194,7 +194,7 @@ func skillCmd(args []string) error {
 		}
 		return nil
 	}
-	return usageErr("kero skill setup|show|status|remove [--agent claude|codex|pi|opencode|agents] [--dry-run]")
+	return usageErr("tuna skill setup|show|status|remove [--agent claude|codex|pi|opencode|agents] [--dry-run]")
 }
 
 func sortedKeys(m map[string]string) []string {
@@ -217,12 +217,12 @@ func skillState(dir string) string {
 	return "current"
 }
 
-// skillFile is Kero's own copy of the skill, in Kero's directory, which
-// each kero rewrites as it runs (SyncSkill): the agents' SKILL.md links to
-// it, so they read the skill of the Kero installed, as it updates.
-func skillFile() string { return filepath.Join(proto.Dir(), "skills", "kero", "SKILL.md") }
+// skillFile is tuna's own copy of the skill, in tuna's directory, which
+// each tuna rewrites as it runs (SyncSkill): the agents' SKILL.md links to
+// it, so they read the skill of the tuna installed, as it updates.
+func skillFile() string { return filepath.Join(proto.Dir(), "skills", "tuna", "SKILL.md") }
 
-// syncSkillFile writes Kero's own copy of the skill, unless it is current.
+// syncSkillFile writes tuna's own copy of the skill, unless it is current.
 func syncSkillFile() error {
 	if b, err := os.ReadFile(skillFile()); err == nil && string(b) == skillGuide {
 		return nil
@@ -231,7 +231,7 @@ func syncSkillFile() error {
 }
 
 // writeSkill installs the skill in an agent's directory: its SKILL.md a
-// link to Kero's own copy. The directory is a real one, as agents list
+// link to tuna's own copy. The directory is a real one, as agents list
 // theirs and may pass over links to directories.
 func writeSkill(dir string) error {
 	if err := syncSkillFile(); err != nil {
@@ -244,7 +244,7 @@ func writeSkill(dir string) error {
 	if t, err := os.Readlink(p); err == nil && t == skillFile() {
 		return nil
 	}
-	os.Remove(p) // a copy, as older keros wrote, or a link to another's
+	os.Remove(p) // a copy, as older Keros wrote, or a link to another's
 	if os.Symlink(skillFile(), p) == nil {
 		return nil
 	}
@@ -253,13 +253,13 @@ func writeSkill(dir string) error {
 	return writeFileAtomic(p, []byte(skillGuide))
 }
 
-// SyncSkill keeps what agents load of Kero current with this kero, which
-// every kero, the app and the CLI, does as it starts. It updates what is
-// this Kero's alone, so that a development build, with a directory of its
-// own, takes nothing from the installed Kero: its own copy of the skill,
+// SyncSkill keeps what agents load of tuna current with this tuna, which
+// every tuna, the app and the CLI, does as it starts. It updates what is
+// this tuna's alone, so that a development build, with a directory of its
+// own, takes nothing from the installed tuna: its own copy of the skill,
 // where its installs link to, and the plugins of Pi and OpenCode written
-// to run its kero command. The installs older keros wrote, copies of the
-// skill, go to the installed Kero, which makes them links. It installs
+// to run its tuna command. The installs older Keros wrote, copies of the
+// skill, go to the installed tuna, which makes them links. It installs
 // nothing that isn't.
 func SyncSkill() {
 	for _, dir := range skillDirs("") {
@@ -268,7 +268,7 @@ func SyncSkill() {
 			if t == skillFile() {
 				syncSkillFile()
 			}
-			continue // or another Kero's
+			continue // or another tuna's
 		}
 		if b, err := os.ReadFile(p); err == nil && string(b) != skillGuide && adoptCopies() {
 			writeSkill(dir)
@@ -281,9 +281,9 @@ func SyncSkill() {
 	}
 }
 
-// adoptCopies tells the installed Kero, which takes the skill's copies,
-// from a development build or one of another $KERO_HOME.
-var adoptCopies = func() bool { return proto.Name() == "kero" && os.Getenv("KERO_HOME") == "" }
+// adoptCopies tells the installed tuna, which takes the skill's copies,
+// from a development build or one of another $TUNA_HOME.
+var adoptCopies = func() bool { return proto.Name() == "tuna" && os.Getenv("TUNA_HOME") == "" }
 
 // hooksFor returns the hooks that go with an --agent: Codex's, Pi's and
 // OpenCode's with the skill they share.
@@ -304,8 +304,8 @@ func skillDirs(agent string) map[string]string {
 		claude = filepath.Join(home, ".claude")
 	}
 	all := map[string]string{
-		"claude": filepath.Join(claude, "skills", "kero"),
-		"agents": filepath.Join(home, ".agents", "skills", "kero"),
+		"claude": filepath.Join(claude, "skills", "tuna"),
+		"agents": filepath.Join(home, ".agents", "skills", "tuna"),
 	}
 	if agent = strings.ToLower(agent); agent != "" {
 		if d, ok := all[agent]; ok {
@@ -326,7 +326,7 @@ type SkillState struct {
 	State string // "current", "outdated" (or partly installed) or "missing"
 }
 
-// SkillStates returns the state of kero's skill and hooks for each kind
+// SkillStates returns the state of tuna's skill and hooks for each kind
 // of agent.
 func SkillStates() []SkillState {
 	var out []SkillState
@@ -348,7 +348,7 @@ func SkillStates() []SkillState {
 	return out
 }
 
-// InstallSkill installs, or updates, kero's skill and hooks for a kind of
+// InstallSkill installs, or updates, tuna's skill and hooks for a kind of
 // agent.
 func InstallSkill(agent string) error {
 	dir := skillDirs(agent)[agent]
@@ -366,7 +366,7 @@ func InstallSkill(agent string) error {
 	return nil
 }
 
-// RemoveSkill removes kero's skill and hooks for a kind of agent.
+// RemoveSkill removes tuna's skill and hooks for a kind of agent.
 func RemoveSkill(agent string) error {
 	dir := skillDirs(agent)[agent]
 	if dir == "" {

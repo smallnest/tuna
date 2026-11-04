@@ -13,8 +13,8 @@ import (
 
 	"github.com/egoist/mygo/ui"
 
-	"kero/internal/proto"
-	"kero/locales"
+	"tuna/internal/proto"
+	"tuna/locales"
 )
 
 // The Files tab is the worktree's tree, a folder listed as it unfolds,

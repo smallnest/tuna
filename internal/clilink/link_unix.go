@@ -8,13 +8,13 @@ import (
 )
 
 func target(bin string) string {
-	t, _ := os.Readlink(filepath.Join(bin, "kero"))
+	t, _ := os.Readlink(filepath.Join(bin, "tuna"))
 	return t
 }
 
 func link(exe, bin string) error {
 	os.MkdirAll(bin, 0o755)
-	link := filepath.Join(bin, "kero")
+	link := filepath.Join(bin, "tuna")
 	if cur, err := os.Readlink(link); err == nil && cur == exe {
 		return nil
 	}

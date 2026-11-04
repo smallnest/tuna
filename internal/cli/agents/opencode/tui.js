@@ -1,21 +1,21 @@
-// Installed by Kero (`kero skill setup`), which replaces it as Kero
-// updates; `kero skill remove` removes it. Inside Kero, it tells Kero the
-// session this terminal shows, to resume it after Kero's background
+// Installed by tuna (`tuna skill setup`), which replaces it as tuna
+// updates; `tuna skill remove` removes it. Inside tuna, it tells tuna the
+// session this terminal shows, to resume it after tuna's background
 // service restarts, and to tell its agent where it runs (index.js).
 import { execFile } from "node:child_process"
 
-const KERO = __KERO__
+const tuna = __kero__
 
 function report(sessionID) {
-  const child = execFile(KERO, ["hook", "opencode"], { timeout: 5000 }, () => {})
+  const child = execFile(tuna, ["hook", "opencode"], { timeout: 5000 }, () => {})
   child.on("error", () => {})
   child.stdin?.end(JSON.stringify({ hook_event_name: "SessionStart", session_id: sessionID }))
 }
 
 export default {
-  id: "kero",
+  id: "tuna",
   setup(context) {
-    if (!process.env.KERO_PANE) return
+    if (!process.env.TUNA_PANE) return
     // The session shown, or the one a subagent's session belongs to.
     const root = (id) => {
       const seen = new Set()

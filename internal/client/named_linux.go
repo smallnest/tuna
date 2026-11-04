@@ -1,4 +1,4 @@
 package client
 
-// kerodCmd is how kerod's command line reads.
-const kerodCmd = "__kerod"
+// tunadCmd is how tunad's command line reads.
+const tunadCmd = "__tunad"

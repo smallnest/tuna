@@ -1,10 +1,10 @@
-# Kero
+# tuna
 
 - Cutting a release: follow [RELEASING.md](RELEASING.md), from `dev`.
 
 ## The fork's branches
 
-This repository is `smallnest/kero`, a fork of `egoist/kero` that keeps its
+This repository is `github.com/smallnest/tuna`, a fork of `github.com/egoist/kero` that keeps its
 own features. Upstream does not merge the fork's pull requests.
 
 - `main` is `upstream/main`, always. Never commit to it here.
@@ -66,7 +66,7 @@ only that it builds.
 | Sidebar sort and group, project badges, folded projects | #214 | `sortButton`, `sessionSidebar`, `projectBadgeColor`, `projectInitial`, `dateHeader` | `TestProjectOrder`, `TestProjectDrag`, `TestSessionAlign`, `TestCollapseSelectedProject`, `TestSidebarRowKeepsTime` |
 | Background opacity and blur | #211 | `washOpacity`, `vibrancyFor`, `WindowBlur` | `TestVibrancyFor`, `TestBlurlessBackgroundIsTranslucent`, `TestTranslucentGlass` |
 | The menu of installed monospaced fonts | #209 | `fontOptions` | `TestFontOptionsInstalled` |
-| Kero the frog | #206 | `pet.go`, `petState` | `go test . -run TestPet` |
+| tuna the frog | #206 | `pet.go`, `petState` | `go test . -run TestPet` |
 | Quitting ends this machine's sessions | #219 | `quitRequested`, `quitAndEnd`, `QuitEndsSessions` | `TestQuitEndsSessions` |
 
 ```sh
@@ -77,7 +77,7 @@ go test . -run 'TestSideToggle|TestFilePane|TestProjectOrder|TestProjectDrag|Tes
 ```
 
 The branches the pull requests came from (`feat/files-view`,
-`sidebar-sort`, `window-opacity`, `font-picker`, `kero-pet`,
+`sidebar-sort`, `window-opacity`, `font-picker`, `tuna-pet`,
 `quit-ends-sessions`) are behind `dev` and may be rebased: a commit that
 looks missing there says nothing about `dev`. Check the code and the
 tests above.
@@ -92,10 +92,10 @@ code opens, and a feature's test can go missing with its code.
 
 ## Which repository releases come from
 
-Kero here releases as `smallnest/kero`: `mygo.json` `updates.github`,
+tuna here releases as `github.com/smallnest/tuna`: `mygo.json` `updates.github`,
 `internal/update.Repo`, and the install scripts in `scripts/` name it.
-Do not change them back to `egoist/kero`. The old releases app updates
-from `egoist/kero`; new builds update from `smallnest/kero`.
+Do not change them back to `github.com/egoist/kero`. The old releases app updates
+from `github.com/egoist/kero`; new builds update from `github.com/smallnest/tuna`.
 
 ## Signing and the update key
 
@@ -103,7 +103,7 @@ There is no Apple Developer ID. macOS builds are ad-hoc signed (an
 `xattr -d com.apple.quarantine` for a user who downloads one), and no
 release takes a certificate or notarization.
 
-`~/.kero-release-keys/mygo-update.key` signs updates; its public half is
+`~/.tuna-release-keys/mygo-update.key` signs updates; its public half is
 `mygo.json`'s `updates.publicKey`. Never commit the secret, and never
 replace the pair: every installed app trusts only that public key.
 

@@ -12,11 +12,11 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 
-	"kero/internal/proto"
-	"kero/internal/remote"
-	"kero/internal/settings"
+	"tuna/internal/proto"
+	"tuna/internal/remote"
+	"tuna/internal/settings"
 
-	"kero/locales"
+	"tuna/locales"
 )
 
 // withHost adds a remote host to a test app, connected, with a session of
@@ -44,7 +44,7 @@ func withHost(t *testing.T, a *App, name string) *host {
 
 // Each host's state replaces its own part of what the app shows, in the
 // hosts' order, and leaves the others', with what the app changed in them
-// before their kerods' states come.
+// before their tunads' states come.
 func TestHostsMergeState(t *testing.T) {
 	a := testApp(t)
 	local := a.local()
@@ -175,16 +175,16 @@ func TestPickerHosts(t *testing.T) {
 	}
 }
 
-// A host the app can't reach says why, and offers what fixes it: Kero
+// A host the app can't reach says why, and offers what fixes it: tuna
 // installed there, for one that has none.
 func TestSidebarHostProblems(t *testing.T) {
 	a := testApp(t)
 	a.mergeState(a.local(), a.st)
 	h := withHost(t, a, "build")
-	h.conn, h.err, h.errKind = connFailed, "kero is not installed on build", remote.ErrNotInstalled
+	h.conn, h.err, h.errKind = connFailed, "tuna is not installed on build", remote.ErrNotInstalled
 	tt := ui.NewTester(a.view, 1100, 700)
 	tt.Frame()
-	if !tt.HasText("Kero isn't installed on build") || !tt.HasText("Install Kero…") {
+	if !tt.HasText("tuna isn't installed on build") || !tt.HasText("Install tuna…") {
 		t.Errorf("no word of the missing Kero: %q", tt.Texts())
 	}
 	h.errKind = remote.ErrAuth
@@ -203,7 +203,7 @@ func TestSidebarHostProblems(t *testing.T) {
 	h.conn, h.errKind = connVersion, nil
 	h.daemonApp = "1.0.0"
 	tt.Frame()
-	if !tt.HasText("Kero on build is another version") {
+	if !tt.HasText("tuna on build is another version") {
 		t.Errorf("no word of the version: %q", tt.Texts())
 	}
 }
@@ -247,7 +247,7 @@ func TestHostShortDir(t *testing.T) {
 	// Quoted for PowerShell, the shell of Windows' panes, in which nothing
 	// of a file's name runs.
 	for in, want := range map[string]string{
-		`C:\Temp\kero-paste\x\pasted-image.png`: `C:\Temp\kero-paste\x\pasted-image.png`,
+		`C:\Temp\tuna-paste\x\pasted-image.png`: `C:\Temp\tuna-paste\x\pasted-image.png`,
 		`C:\Temp\a b.png`:                       `'C:\Temp\a b.png'`,
 		`C:\Temp\$(calc).png`:                   `'C:\Temp\$(calc).png'`,
 		"C:\\Temp\\it\u2019s.png":               "'C:\\Temp\\it\u2019\u2019s.png'",
@@ -277,7 +277,7 @@ func TestEditorCommandWindows(t *testing.T) {
 
 func TestShellEscape(t *testing.T) {
 	for in, want := range map[string]string{
-		"/tmp/kero-1000/paste/x/pasted-image.png": "/tmp/kero-1000/paste/x/pasted-image.png",
+		"/tmp/tuna-1000/paste/x/pasted-image.png": "/tmp/tuna-1000/paste/x/pasted-image.png",
 		"/tmp/a b/it's (1).png":                   `/tmp/a\ b/it\'s\ \(1\).png`,
 		"/tmp/$HOME;rm":                           `/tmp/\$HOME\;rm`,
 	} {
@@ -358,7 +358,7 @@ func TestRemoteActionsStayOnTheirHost(t *testing.T) {
 	a.from = a.local()
 	a.selected = "rs-build"
 	if !a.fromMay("pane.split.right", nil) {
-		t.Error("this machine's kero do refused")
+		t.Error("this machine's tuna do refused")
 	}
 }
 
@@ -371,15 +371,15 @@ func TestHostVersions(t *testing.T) {
 	h.info.Kero = "0.1.0"
 	h.daemonApp = "0.1.0"
 	if h.stale() {
-		t.Error("kerod of the bridge's version is stale")
+		t.Error("tunad of the bridge's version is stale")
 	}
 	h.conn, h.daemonApp, h.info.Kero = connReady, "0.1.0", "0.2.0"
 	if !h.stale() {
-		t.Error("kerod older than the Kero installed is not stale")
+		t.Error("tunad older than the tuna installed is not stale")
 	}
 	h.daemonApp = "0.3.0"
 	if h.stale() {
-		t.Error("kerod newer than the bridge that answered is stale")
+		t.Error("tunad newer than the bridge that answered is stale")
 	}
 }
 
@@ -440,7 +440,7 @@ func TestHostColor(t *testing.T) {
 }
 
 // Dark, a remote group's tag and a remote pane's header in its host's
-// color ($KERO_SHOTS).
+// color ($TUNA_SHOTS).
 func TestSidebarFlatDarkShot(t *testing.T) {
 	a := testApp(t)
 	a.mergeState(a.local(), a.st)
